@@ -114,7 +114,7 @@
                             askQuestions(questionIndex + 1);
                         };
                     } else {
-                        responses[options[0].text] = option.text; // Save response with the key of the first option
+                        responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
                         updateConversation(null, option.text, 'answer');
                         responseIframe.src = option.url; // Load URL in iframe
                         askQuestions(questionIndex + 1);
