@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P+ Program creation companion</title>
+    <title>Chatbot Questions</title>
     <style>
         #conversation {
             border: 1px solid #ccc;
@@ -140,8 +140,12 @@
 
         // Function to display JSON
         function displayJson() {
-            const jsonData = JSON.stringify(responses, null, 4);
-            jsonOutput.value = jsonData;
+            let jsonData = {};
+            for (const question in responses) {
+                jsonData[question] = responses[question];
+            }
+            const jsonStr = JSON.stringify(jsonData, null, 4);
+            jsonOutput.value = jsonStr;
         }
 
         // Start by loading questions
