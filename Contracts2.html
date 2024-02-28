@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Questions</title>
+    <style>
+        #conversation {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 400px;
+            overflow-y: auto;
+            height: 300px; /* Limit conversation height to enable scrolling */
+        }
+
+        #jsonOutput {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        #responseIframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .question {
+            color: blue;
+        }
+
+        .answer {
+            color: green;
+        }
+
+        .option {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+            .option:hover {
+                background-color: #f0f0f0;
+            }
+    </style>
+</head>
+<body>
+    <div id="conversation"></div>
+    <input type="text" id="userInput">
+    <button id="submit">Submit</button>
+    <textarea id="jsonOutput" readonly></textarea>
+    <iframe id="responseIframe" src="" frameborder="0"></iframe>
+
+    <script>
+        const conversationDiv = document.getElementById('conversation');
+        const userInput = document.getElementById('userInput');
+        const submitButton = document.getElementById('submit');
+        const jsonOutput = document.getElementById('jsonOutput');
+        const responseIframe = document.getElementById('responseIframe');
+        let questions = [
+            {
+                "id": "name",
+                "question": "What is your name?",
+                "options": null,
+                "next": "age"
+            },
+            {
+                "id": "age",
+                "question": "How old are you?",
+                "options": [
+                    { "text": "Under 18", "next": "underage", "responseText": "You're under 18.", "url": "https://www.example.com/under-18" },
+                    { "text": "18-30", "next": "youngAdult", "responseText": "You're between 18 and 30.", "url": "https://www.example.com/18-30" },
+                    { "text": "Over 30", "next": "adult", "responseText": "You're over 30.", "url": "https://www.example.com/over-30" }
+                ],
+                "defaultNext": "adult"
+            },
+            {
+                "id": "underage",
+                "question": "Are you a student?",
+                "options": [
+                    { "text": "Yes", "next": "student", "responseText": "You're a student.", "url": "https://www.example.com/student" },
+                    { "text": "No", "next": "nonStudent", "responseText": "You're not a student.", "url": "https://www.example.com/non-student" }
+                ],
+                "defaultNext": "student"
+            },
+            {
+                "id": "student",
+                "question": "Where do you study?",
+                "options": null,
+                "next": null
+            },
+            {
+                "id": "nonStudent",
+                "question": "Where are you employed?",
+                "options": null,
+                "next": null
+            }
+        ];
+        let responses = {};
+
+        // Function to ask questions recursively
+        async function askQuestions(questionIndex) {
+            if (questionIndex >= questions.length) {
+                displayJson();
+                return;
+            }
+            const questionObj = questions[questionIndex];
+            updateConversation(questionObj.question, null, 'question');
+            if (questionObj.options) {
+                userInput.style.display = 'none'; // Hide text input
+                submitButton.style.display = 'none'; // Hide submit button
+                showOptions(questionObj.options, questionIndex);
+            } else {
+                userInput.style.display = 'block'; // Show text input
+                submitButton.style.display = 'block'; // Show submit button
+                submitButton.onclick = () => {
+                    const userResponse = userInput.value.trim();
+                    responses[questionObj.question] = userResponse;
+                    updateConversation(null, userResponse, 'answer');
+                    responseIframe.src = ''; // Clear iframe
+                    userInput.value = ''; // Clear input field
+                    askQuestions(questionIndex + 1);
+                };
+            }
+        }
+
+        // Function to show answer options
+        function showOptions(options, questionIndex) {
+            const optionsDiv = document.createElement('div');
+            options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.textContent = option.text;
+                optionDiv.classList.add('option');
+                optionDiv.onclick = () => {
+                    if (option.text === "Others") {
+                        userInput.style.display = 'block'; // Show text input
+                        submitButton.style.display = 'block'; // Show submit button
+                        submitButton.onclick = () => {
+                            const userResponse = userInput.value.trim();
+                            responses[options[0].text] = userResponse; // Save response with the key of the first option
+                            updateConversation(null, userResponse, 'answer');
+                            responseIframe.src = ''; // Clear iframe
+                            userInput.value = ''; // Clear input field
+                            askQuestions(questionIndex + 1);
+                        };
+                    } else {
+                        responses[options[0].text] = option.text; // Save response with the key of the first option
+                        updateConversation(null, option.text, 'answer');
+                        responseIframe.src = option.url; // Load URL in iframe
+                        askQuestions(questionIndex + 1);
+                    }
+                };
+                optionsDiv.appendChild(optionDiv);
+            });
+            conversationDiv.appendChild(optionsDiv);
+            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+        }
+
+        // Function to update conversation display
+        function updateConversation(question, response, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(className);
+            if (question) {
+                messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
+            } else {
+                messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
+            }
+            conversationDiv.appendChild(messageDiv);
+            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+        }
+
+        // Function to display JSON
+        function displayJson() {
+            const jsonData = JSON.stringify(responses, null, 4);
+            jsonOutput.value = jsonData;
+        }
+
+        // Start the conversation
+        askQuestions(0);
+    </script>
+</body>
+</html>
