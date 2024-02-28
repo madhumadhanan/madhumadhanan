@@ -1,0 +1,39 @@
+[
+    {
+        "id": "name",
+        "question": "What is your name?",
+        "options": null,
+        "next": "age"
+    },
+    {
+        "id": "age",
+        "question": "How old are you?",
+        "options": [
+            { "text": "Under 18", "next": "underage", "responseText": "You're under 18.", "url": "https://www.example.com/under-18" },
+            { "text": "18-30", "next": "youngAdult", "responseText": "You're between 18 and 30.", "url": "https://www.example.com/18-30" },
+            { "text": "Over 30", "next": "adult", "responseText": "You're over 30.", "url": "https://www.example.com/over-30" }
+        ],
+        "defaultNext": "adult"
+    },
+    {
+        "id": "underage",
+        "question": "Are you a student?",
+        "options": [
+            { "text": "Yes", "next": "student", "responseText": "You're a student.", "url": "https://www.example.com/student" },
+            { "text": "No", "next": "nonStudent", "responseText": "You're not a student.", "url": "https://www.example.com/non-student" }
+        ],
+        "defaultNext": "student"
+    },
+    {
+        "id": "student",
+        "question": "Where do you study?",
+        "options": null,
+        "next": null
+    },
+    {
+        "id": "nonStudent",
+        "question": "Where are you employed?",
+        "options": null,
+        "next": null
+    }
+]
