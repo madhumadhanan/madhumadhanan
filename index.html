@@ -94,50 +94,38 @@
             }
         }
 
-        // Function to show answer options
-        function showOptions(options, questionIndex) {
-            const optionsDiv = document.createElement('div');
-            options.forEach(option => {
-                const optionButton = document.createElement('button');
-                optionButton.textContent = option.text;
-                optionButton.classList.add('optionButton');
-                optionButton.onclick = () => {
-                    if (option.text === "Others") {
-                        userInput.style.display = 'block'; // Show text input
-                        submitButton.style.display = 'block'; // Show submit button
-                        submitButton.onclick = () => {
-                            const userResponse = userInput.value.trim();
-                            responses[options[0].text] = userResponse; // Save response with the key of the first option
-                            updateConversation(null, userResponse, 'answer');
-                            responseIframe.src = ''; // Clear iframe
-                            userInput.value = ''; // Clear input field
-                            askQuestions(questionIndex + 1);
-                        };
-                    } else {
-                        responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
-                        updateConversation(null, option.text, 'answer');
-                        responseIframe.src = option.url; // Load URL in iframe
-                        askQuestions(questionIndex + 1);
-                    }
+ // Function to show answer options
+function showOptions(options, questionIndex) {
+    const optionsDiv = document.createElement('div');
+    options.forEach(option => {
+        const optionButton = document.createElement('button');
+        optionButton.textContent = option.text;
+        optionButton.classList.add('optionButton');
+        optionButton.onclick = () => {
+            if (option.text === "Others") {
+                userInput.style.display = 'block'; // Show text input
+                submitButton.style.display = 'block'; // Show submit button
+                submitButton.onclick = () => {
+                    const userResponse = userInput.value.trim();
+                    responses[questions[questionIndex].question] = userResponse; // Save response with the current question as key
+                    updateConversation(null, userResponse, 'answer');
+                    responseIframe.src = ''; // Clear iframe
+                    userInput.value = ''; // Clear input field
+                    askQuestions(questionIndex + 1);
                 };
-                optionsDiv.appendChild(optionButton);
-            });
-            conversationDiv.appendChild(optionsDiv);
-            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-        }
-
-        // Function to update conversation display
-        function updateConversation(question, response, className) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add(className);
-            if (question) {
-                messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
             } else {
-                messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
+                responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
+                updateConversation(null, option.text, 'answer');
+                responseIframe.src = option.url; // Load URL in iframe
+                askQuestions(questionIndex + 1);
             }
-            conversationDiv.appendChild(messageDiv);
-            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-        }
+        };
+        optionsDiv.appendChild(optionButton);
+    });
+    conversationDiv.appendChild(optionsDiv);
+    conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+}
+
 
         // Function to display JSON
         function displayJson() {
