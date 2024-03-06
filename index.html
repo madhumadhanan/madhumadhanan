@@ -1,183 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Questions</title>
-    <style>
-        #conversation {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            max-width: 400px;
-            overflow-y: auto;
-            height: 300px; /* Limit conversation height to enable scrolling */
-        }
+const conversationDiv = document.getElementById('conversation');
+const userInput = document.getElementById('userInput');
+const submitButton = document.getElementById('submit');
+const jsonInput = document.getElementById('jsonInput');
+const jsonOutput = document.getElementById('jsonOutput');
+const refreshButton = document.getElementById('refresh');
+const responseIframe = document.getElementById('responseIframe');
+let questions = [];
+let responses = {};
 
-        #jsonInput {
-            width: 100%;
-            height: 100px;
-            margin-top: 10px;
-        }
+// Function to load questions from JSON input
+function loadQuestionsFromInput() {
+    try {
+        questions = JSON.parse(jsonInput.value);
+        console.log('Questions loaded from input:', questions);
+        askQuestions(0); // Start the conversation
+    } catch (error) {
+        console.error('Error parsing JSON input:', error);
+    }
+}
 
-        #jsonOutput {
-            width: 100%;
-            height: 100px;
-            margin-top: 10px;
-        }
+// Function to load questions from JSON file
+async function loadQuestionsFromFile() {
+    try {
+        const response = await fetch('questions.json');
+        const jsonData = await response.json();
+        console.log('JSON Data:', jsonData);
+        questions = jsonData;
+        console.log('Questions loaded from file:', questions);
+        jsonInput.value = JSON.stringify(questions, null, 4); // Preload questions into the JSON textarea
+        askQuestions(0); // Start the conversation
+    } catch (error) {
+        console.error('Error loading questions:', error);
+    }
+}
 
-        #responseIframe {
-            width: 100%;
-            height: 300px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
+// Function to update conversation display
+function updateConversation(question, response, className) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add(className);
+    if (question) {
+        messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
+    } else {
+        messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
+    }
+    conversationDiv.appendChild(messageDiv);
+    conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+}
 
-        .question {
-            color: blue;
-        }
+// Function to ask questions recursively
+async function askQuestions(questionIndex) {
+    if (questionIndex >= questions.length) {
+        displayJson();
+        return;
+    }
+    const questionObj = questions[questionIndex];
+    updateConversation(questionObj.question, null, 'question');
+    if (questionObj.options) {
+        userInput.style.display = 'none'; // Hide text input
+        submitButton.style.display = 'none'; // Hide submit button
+        showOptions(questionObj.options, questionIndex);
+    } else {
+        userInput.style.display = 'block'; // Show text input
+        submitButton.style.display = 'block'; // Show submit button
+        submitButton.onclick = () => {
+            const userResponse = userInput.value.trim();
+            responses[questionObj.question] = userResponse;
+            updateConversation(null, userResponse, 'answer');
+            responseIframe.src = ''; // Clear iframe
+            userInput.value = ''; // Clear input field
+            askQuestions(questionIndex + 1);
+        };
+    }
+}
 
-        .answer {
-            color: green;
-        }
-
-        .optionButton {
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
-<body>
-    <textarea id="jsonInput" placeholder="Enter JSON data representing questions..."></textarea>
-    <button id="refresh">Refresh Questions</button>
-    <div id="conversation"></div>
-    <input type="text" id="userInput">
-    <button id="submit">Submit</button>
-    <textarea id="jsonOutput" readonly></textarea>
-    <iframe id="responseIframe" src="" frameborder="0"></iframe>
-    
-    <script>
-        const conversationDiv = document.getElementById('conversation');
-        const userInput = document.getElementById('userInput');
-        const submitButton = document.getElementById('submit');
-        const jsonInput = document.getElementById('jsonInput');
-        const jsonOutput = document.getElementById('jsonOutput');
-        const refreshButton = document.getElementById('refresh');
-        const responseIframe = document.getElementById('responseIframe');
-        let questions = [];
-        let responses = {};
-
-        // Function to load questions from JSON input
-        function loadQuestionsFromInput() {
-            try {
-                questions = JSON.parse(jsonInput.value);
-                console.log('Questions loaded from input:', questions);
-                askQuestions(0); // Start the conversation
-            } catch (error) {
-                console.error('Error parsing JSON input:', error);
-            }
-        }
-
-        // Function to load questions from JSON file
-        async function loadQuestionsFromFile() {
-            try {
-                const response = await fetch('questions.json');
-                questions = await response.json();
-                console.log('Questions loaded from file:', questions);
-                jsonInput.value = JSON.stringify(questions, null, 4); // Preload questions into the JSON textarea
-                askQuestions(0); // Start the conversation
-            } catch (error) {
-                console.error('Error loading questions:', error);
-            }
-        }
-
-        // Function to ask questions recursively
-        async function askQuestions(questionIndex) {
-            function updateConversation(question, response, className) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add(className);
-                if (question) {
-                    messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
-                } else {
-                    messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
-                }
-                conversationDiv.appendChild(messageDiv);
-                conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-            }
-
-            if (questionIndex >= questions.length) {
-                displayJson();
-                return;
-            }
-            const questionObj = questions[questionIndex];
-            updateConversation(questionObj.question, null, 'question');
-            if (questionObj.options) {
-                userInput.style.display = 'none'; // Hide text input
-                submitButton.style.display = 'none'; // Hide submit button
-                showOptions(questionObj.options, questionIndex);
-            } else {
+// Function to show answer options
+function showOptions(options, questionIndex) {
+    const optionsDiv = document.createElement('div');
+    options.forEach(option => {
+        const optionButton = document.createElement('button');
+        optionButton.textContent = option.text;
+        optionButton.classList.add('optionButton');
+        optionButton.onclick = () => {
+            if (option.text === "Others") {
                 userInput.style.display = 'block'; // Show text input
                 submitButton.style.display = 'block'; // Show submit button
                 submitButton.onclick = () => {
                     const userResponse = userInput.value.trim();
-                    responses[questionObj.question] = userResponse;
+                    responses[questions[questionIndex].question] = userResponse; // Save response with the current question as key
                     updateConversation(null, userResponse, 'answer');
                     responseIframe.src = ''; // Clear iframe
                     userInput.value = ''; // Clear input field
                     askQuestions(questionIndex + 1);
                 };
+            } else {
+                responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
+                updateConversation(null, option.text, 'answer');
+                responseIframe.src = option.url; // Load URL in iframe
+                askQuestions(questionIndex + 1);
             }
-        }
+        };
+        optionsDiv.appendChild(optionButton);
+    });
+    conversationDiv.appendChild(optionsDiv);
+    conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+}
 
-        // Function to show answer options
-        function showOptions(options, questionIndex) {
-            const optionsDiv = document.createElement('div');
-            options.forEach(option => {
-                const optionButton = document.createElement('button');
-                optionButton.textContent = option.text;
-                optionButton.classList.add('optionButton');
-                optionButton.onclick = () => {
-                    if (option.text === "Others") {
-                        userInput.style.display = 'block'; // Show text input
-                        submitButton.style.display = 'block'; // Show submit button
-                        submitButton.onclick = () => {
-                            const userResponse = userInput.value.trim();
-                            responses[questions[questionIndex].question] = userResponse; // Save response with the current question as key
-                            updateConversation(null, userResponse, 'answer');
-                            responseIframe.src = ''; // Clear iframe
-                            userInput.value = ''; // Clear input field
-                            askQuestions(questionIndex + 1);
-                        };
-                    } else {
-                        responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
-                        updateConversation(null, option.text, 'answer');
-                        responseIframe.src = option.url; // Load URL in iframe
-                        askQuestions(questionIndex + 1);
-                    }
-                };
-                optionsDiv.appendChild(optionButton);
-            });
-            conversationDiv.appendChild(optionsDiv);
-            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-        }
+// Function to display JSON
+function displayJson() {
+    const jsonData = {};
+    for (const question in responses) {
+        jsonData[question] = responses[question];
+    }
+    const jsonStr = JSON.stringify(jsonData, null, 4);
+    jsonOutput.value = jsonStr;
+}
 
-        // Function to display JSON
-        function displayJson() {
-            const jsonData = {};
-            for (const question in responses) {
-                jsonData[question] = responses[question];
-            }
-            const jsonStr = JSON.stringify(jsonData, null, 4);
-            jsonOutput.value = jsonStr;
-        }
+// Event listener for refresh button
+refreshButton.addEventListener('click', () => {
+    loadQuestionsFromInput();
+});
 
-        // Event listener for refresh button
-        refreshButton.addEventListener('click', () => {
-            loadQuestionsFromInput();
-        });
-
-        // Start by loading questions from file
-        loadQuestionsFromFile();
-    </script>
-</body>
-</html>
+// Start by loading questions from file
+loadQuestionsFromFile();
