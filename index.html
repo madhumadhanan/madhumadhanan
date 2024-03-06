@@ -92,6 +92,18 @@
 
         // Function to ask questions recursively
         async function askQuestions(questionIndex) {
+            function updateConversation(question, response, className) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add(className);
+                if (question) {
+                    messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
+                } else {
+                    messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
+                }
+                conversationDiv.appendChild(messageDiv);
+                conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
+            }
+
             if (questionIndex >= questions.length) {
                 displayJson();
                 return;
@@ -145,19 +157,6 @@
                 optionsDiv.appendChild(optionButton);
             });
             conversationDiv.appendChild(optionsDiv);
-            conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-        }
-
-        // Function to update conversation display
-        function updateConversation(question, response, className) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add(className);
-            if (question) {
-                messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
-            } else {
-                messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
-            }
-            conversationDiv.appendChild(messageDiv);
             conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
         }
 
