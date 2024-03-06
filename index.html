@@ -1,4 +1,63 @@
-const conversationDiv = document.getElementById('conversation');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Questions</title>
+    <style>
+        #conversation {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 400px;
+            overflow-y: auto;
+            height: 300px; /* Limit conversation height to enable scrolling */
+        }
+
+        #jsonInput {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        #jsonOutput {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        #responseIframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .question {
+            color: blue;
+        }
+
+        .answer {
+            color: green;
+        }
+
+        .optionButton {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="jsonInput" placeholder="Enter JSON data representing questions..."></textarea>
+    <button id="refresh">Refresh Questions</button>
+    <div id="conversation"></div>
+    <input type="text" id="userInput">
+    <button id="submit">Submit</button>
+    <textarea id="jsonOutput" readonly></textarea>
+    <iframe id="responseIframe" src="" frameborder="0"></iframe>
+    
+    <script>
+        const conversationDiv = document.getElementById('conversation');
 const userInput = document.getElementById('userInput');
 const submitButton = document.getElementById('submit');
 const jsonInput = document.getElementById('jsonInput');
@@ -122,3 +181,7 @@ refreshButton.addEventListener('click', () => {
 
 // Start by loading questions from file
 loadQuestionsFromFile();
+
+    </script>
+</body>
+</html>
