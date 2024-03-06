@@ -84,6 +84,7 @@
                 const response = await fetch('questions.json');
                 questions = await response.json();
                 console.log('Questions loaded from file:', questions);
+                jsonInput.value = JSON.stringify(questions, null, 4); // Preload questions into the JSON textarea
                 askQuestions(0); // Start the conversation
             } catch (error) {
                 console.error('Error loading questions:', error);
