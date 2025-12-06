@@ -3,185 +3,503 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Questions</title>
+    <title>Madhu Madhanan M | VP - Product Engineering & DevSecOps Leader</title>
     <style>
-        #conversation {
-            border: 1px solid #ccc;
-            padding: 10px;
+        /* Base Styling & Reset */
+        :root {
+            --color-bg: #1e1e1e; /* Dark background */
+            --color-text: #ffffff; /* Light text */
+            --color-accent: #00bcd4; /* Cyan/Teal accent color */
+            --color-secondary: #333333; /* Darker grey for cards/borders */
+            --font-family-primary: 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding-top: 80px; /* Space for fixed header */
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: var(--color-bg);
+            border-bottom: 1px solid var(--color-secondary);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--color-accent);
+        }
+
+        /* --- Section Styling --- */
+        section {
+            padding: 100px 0;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-accent);
+        }
+
+        h3 {
+            font-size: 1.8em;
+            border-left: 4px solid var(--color-accent);
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            text-align: center;
+            padding: 150px 0 100px 0;
+            background-color: #111111; /* Slightly darker */
+        }
+
+        #hero h1 {
+            font-size: 4em;
             margin-bottom: 10px;
-            max-width: 400px;
-            overflow-y: auto;
-            height: 300px; /* Limit conversation height to enable scrolling */
         }
 
-        #jsonInput {
-            width: 100%;
-            height: 100px;
-            margin-top: 10px;
+        #hero p {
+            font-size: 1.5em;
+            color: #ccc;
+            margin-bottom: 40px;
         }
 
-        #jsonOutput {
-            width: 100%;
-            height: 100px;
-            margin-top: 10px;
+        .cta-buttons a {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        #responseIframe {
-            width: 100%;
-            height: 300px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
+        .cta-buttons .primary {
+            background-color: var(--color-accent);
+            color: var(--color-bg);
         }
 
-        .question {
-            color: blue;
+        .cta-buttons .secondary {
+            border: 2px solid var(--color-accent);
+            color: var(--color-text);
         }
 
-        .answer {
-            color: green;
+        .cta-buttons .primary:hover {
+            background-color: #0097a7;
+        }
+        
+        .cta-buttons .secondary:hover {
+            background-color: var(--color-accent);
+            color: var(--color-bg);
         }
 
-        .optionButton {
-            margin-right: 5px;
+        /* --- Experience (Timeline) --- */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--color-secondary);
+        }
+
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -43px;
+            top: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            border: 4px solid var(--color-bg);
+        }
+
+        .timeline-item h4 {
+            font-size: 1.4em;
             margin-bottom: 5px;
+            color: var(--color-accent);
+        }
+
+        .timeline-item p.duration {
+            font-style: italic;
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+
+        /* --- Expertise (Skills Grid) --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .skill-category {
+            background-color: var(--color-secondary);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid var(--color-accent);
+        }
+
+        .skill-category h4 {
+            margin-top: 0;
+            font-size: 1.4em;
+            color: var(--color-accent);
+            margin-bottom: 15px;
+        }
+
+        .skill-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .skill-list li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #555;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .skill-list li:last-child {
+            border-bottom: none;
+        }
+
+        .proficiency {
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+
+        /* --- Offerings (Card Layout) --- */
+        .offerings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+
+        .offering-card {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 8px;
+            border-top: 5px solid var(--color-accent);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .offering-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .offering-card h4 {
+            color: var(--color-accent);
+            font-size: 1.5em;
+        }
+
+        .metric {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        .metric-label {
+            color: #bbb;
+            font-size: 0.9em;
+        }
+
+        /* --- Contact --- */
+        #contact {
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .info-block {
+            padding: 20px;
+            background-color: var(--color-secondary);
+            border-radius: 5px;
+            flex-basis: 30%;
+        }
+
+        .info-block h4 {
+            color: var(--color-accent);
+            margin-top: 0;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #111111;
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid var(--color-secondary);
+            font-size: 0.9em;
+        }
+
+        .social-links a {
+            margin: 0 10px;
+            font-size: 1.2em;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            #hero h1 {
+                font-size: 3em;
+            }
+            .nav-content {
+                flex-direction: column;
+            }
+            nav a {
+                margin: 5px 10px;
+            }
+            .offerings-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-info {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <textarea id="jsonInput" placeholder="Enter JSON data representing questions..."></textarea>
-    <button id="refresh">Refresh Questions</button>
-    <div id="conversation"></div>
-    <input type="text" id="userInput">
-    <button id="submit">Submit</button>
-    <textarea id="jsonOutput" readonly></textarea>
-    <iframe id="responseIframe" src="" frameborder="0"></iframe>
-    
-    <script>
-        const conversationDiv = document.getElementById('conversation');
-const userInput = document.getElementById('userInput');
-const submitButton = document.getElementById('submit');
-const jsonInput = document.getElementById('jsonInput');
-const jsonOutput = document.getElementById('jsonOutput');
-const refreshButton = document.getElementById('refresh');
-const responseIframe = document.getElementById('responseIframe');
-let questions = [];
-let responses = {};
 
-// Function to load questions from JSON input
-function loadQuestionsFromInput() {
-    try {
-        questions = JSON.parse(jsonInput.value);
-        console.log('Questions loaded from input:', questions);
-        askQuestions(0); // Start the conversation
-    } catch (error) {
-        console.error('Error parsing JSON input:', error);
-    }
-}
+    <header>
+        <div class="container nav-content">
+            <div class="logo">[.MM]</div>
+            <nav>
+                <a href="#hero">Home</a>
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#expertise">Expertise</a>
+                <a href="#offerings">Offerings</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-// Function to load questions from JSON file
-async function loadQuestionsFromFile() {
-    try {
-        const response = await fetch('questions.json');
-        const jsonData = await response.json();
-        console.log('JSON Data:', jsonData);
-        questions = jsonData;
-        console.log('Questions loaded from file:', questions);
-        jsonInput.value = JSON.stringify(questions, null, 4); // Preload questions into the JSON textarea
-        askQuestions(0); // Start the conversation
-    } catch (error) {
-        console.error('Error loading questions:', error);
-    }
-}
+    <section id="hero">
+        <div class="container">
+            <p style="color: var(--color-accent); font-size: 1.2em;">Madhu Madhanan M</p>
+            <h1>Global DevSecOps and Engineering Transformation Leader</h1>
+            <p>Vice President - Product Engineering | Engineering by Passion, Evangelist by Profession.</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="primary">Get in Touch</a>
+                <a href="#expertise" class="secondary">View Expertise</a>
+            </div>
+        </div>
+    </section>
 
-// Function to update conversation display
-function updateConversation(question, response, className) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add(className);
-    if (question) {
-        messageDiv.innerHTML = `<strong>Bot:</strong> ${question}`;
-    } else {
-        messageDiv.innerHTML = `<strong>You:</strong> ${response}`;
-    }
-    conversationDiv.appendChild(messageDiv);
-    conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-}
+    <section id="about">
+        <div class="container">
+            <h2>About Me</h2>
+            <p>As a seasoned leader in engineering and innovation with over **15 years of experience** at the forefront of digital transformation, my focus is on **Large-scale Systems Engineering** and **Enterprise Transformation**.</p>
+            <p>I specialize in developing and deploying **Agile-DevSecOps related IPs and Solutions** that accelerate adoption in complex organizations. My technical approach emphasizes applying **cross-domain practices**—such as **TOC (Theory of Constraints), Lean, Statistical Modelling, and AI/ML**—to achieve **High Performance Software Engineering (HPSE)**.</p>
+            <p>I champion the use of **Gamification (Octalysis)** to build engineering "muscle memory" and foster a culture of technical excellence and continuous improvement.</p>
+        </div>
+    </section>
 
-// Function to ask questions recursively
-async function askQuestions(questionIndex) {
-    if (questionIndex >= questions.length) {
-        displayJson();
-        return;
-    }
-    const questionObj = questions[questionIndex];
-    updateConversation(questionObj.question, null, 'question');
-    if (questionObj.options) {
-        userInput.style.display = 'none'; // Hide text input
-        submitButton.style.display = 'none'; // Hide submit button
-        showOptions(questionObj.options, questionIndex);
-    } else {
-        userInput.style.display = 'block'; // Show text input
-        submitButton.style.display = 'block'; // Show submit button
-        submitButton.onclick = () => {
-            const userResponse = userInput.value.trim();
-            responses[questionObj.question] = userResponse;
-            updateConversation(null, userResponse, 'answer');
-            responseIframe.src = ''; // Clear iframe
-            userInput.value = ''; // Clear input field
-            askQuestions(questionIndex + 1);
-        };
-    }
-}
+    <hr style="border-color: var(--color-secondary);">
 
-// Function to show answer options
-function showOptions(options, questionIndex) {
-    const optionsDiv = document.createElement('div');
-    options.forEach(option => {
-        const optionButton = document.createElement('button');
-        optionButton.textContent = option.text;
-        optionButton.classList.add('optionButton');
-        optionButton.onclick = () => {
-            if (option.text === "Others") {
-                userInput.style.display = 'block'; // Show text input
-                submitButton.style.display = 'block'; // Show submit button
-                submitButton.onclick = () => {
-                    const userResponse = userInput.value.trim();
-                    responses[questions[questionIndex].question] = userResponse; // Save response with the current question as key
-                    updateConversation(null, userResponse, 'answer');
-                    responseIframe.src = ''; // Clear iframe
-                    userInput.value = ''; // Clear input field
-                    askQuestions(questionIndex + 1);
-                };
-            } else {
-                responses[questions[questionIndex].question] = option.text; // Save response with the current question as key
-                updateConversation(null, option.text, 'answer');
-                responseIframe.src = option.url; // Load URL in iframe
-                askQuestions(questionIndex + 1);
-            }
-        };
-        optionsDiv.appendChild(optionButton);
-    });
-    conversationDiv.appendChild(optionsDiv);
-    conversationDiv.scrollTop = conversationDiv.scrollHeight; // Scroll to bottom
-}
+    <section id="experience">
+        <div class="container">
+            <h2>My Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Vice President - Product Engineering</h4>
+                    <p class="duration">CitiusTech | June 2023 – Present</p>
+                    <p>Leading product engineering initiatives and driving technological advancements within the healthcare technology space, focusing on scalable product delivery.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Global Head of Agile-DevSecOps and SRE Transformation (General Manager)</h4>
+                    <p class="duration">Wipro Digital | 2009 – May 2023</p>
+                    <p>Instrumental in building and scaling the **Composable DevSecOps Platform** as Chief Architect and Product Manager, driving massive organizational shifts in development and operations practices globally.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Management and Consulting Roles</h4>
+                    <p class="duration">Sutherland Global Services & Other | Prior to 2009</p>
+                    <p>Focus on service quality improvements, process digitization, and operational excellence in consulting environments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-// Function to display JSON
-function displayJson() {
-    const jsonData = {};
-    for (const question in responses) {
-        jsonData[question] = responses[question];
-    }
-    const jsonStr = JSON.stringify(jsonData, null, 4);
-    jsonOutput.value = jsonStr;
-}
+    <hr style="border-color: var(--color-secondary);">
 
-// Event listener for refresh button
-refreshButton.addEventListener('click', () => {
-    loadQuestionsFromInput();
-});
+    <section id="expertise">
+        <div class="container">
+            <h2>Skills & Expertise</h2>
+            <div class="skills-grid">
+                
+                <div class="skill-category">
+                    <h4>Leadership & Transformation</h4>
+                    <ul class="skill-list">
+                        <li>Engineering Transformation <span class="proficiency">Expert</span></li>
+                        <li>Large-scale Systems Engineering <span class="proficiency">Expert</span></li>
+                        <li>Digital Innovation <span class="proficiency">Advanced</span></li>
+                        <li>Team Leadership & Mentoring <span class="proficiency">Expert</span></li>
+                    </ul>
+                </div>
 
-// Start by loading questions from file
-loadQuestionsFromFile();
+                <div class="skill-category">
+                    <h4>DevSecOps & SRE</h4>
+                    <ul class="skill-list">
+                        <li>Industrialized DevSecOps <span class="proficiency">Expert</span></li>
+                        <li>Composable Platform Architecture <span class="proficiency">Expert</span></li>
+                        <li>SRE (Site Reliability Engineering) <span class="proficiency">Advanced</span></li>
+                        <li>CI/CD & Automation <span class="proficiency">Expert</span></li>
+                    </ul>
+                </div>
 
-    </script>
+                <div class="skill-category">
+                    <h4>Methodologies & Models</h4>
+                    <ul class="skill-list">
+                        <li>Theory of Constraints (TOC) <span class="proficiency">Expert</span></li>
+                        <li>Lean & Statistical Modelling <span class="proficiency">Expert</span></li>
+                        <li>Agile & Scrum <span class="proficiency">Expert</span></li>
+                        <li>Octalysis (Gamification) <span class="proficiency">Advanced</span></li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h4>Emerging Tech & Product</h4>
+                    <ul class="skill-list">
+                        <li>AI/ML (HPSE Application) <span class="proficiency">Advanced</span></li>
+                        <li>Digital Twin <span class="proficiency">Advanced</span></li>
+                        <li>Product Management <span class="proficiency">Expert</span></li>
+                        <li>Solution Architecture <span class="proficiency">Expert</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr style="border-color: var(--color-secondary);">
+
+    <section id="offerings">
+        <div class="container">
+            <h2>Featured Offerings</h2>
+            <p style="text-align: center; margin-bottom: 50px; color: #bbb;">End-to-end technology solutions empowering organizations to scale with confidence.</p>
+            <div class="offerings-grid">
+                
+                <div class="offering-card">
+                    <h4>Industrialized DevSecOps</h4>
+                    <p>Driving enterprise adoption by focusing on building muscle memory through gamification and repeatable processes.</p>
+                    <div class="metric">15+</div>
+                    <div class="metric-label">Large Enterprises Transformed</div>
+                </div>
+
+                <div class="offering-card">
+                    <h4>Composable Platform Architecture</h4>
+                    <p>Architecting flexible, high-performance DevSecOps platforms to accelerate software delivery and innovation.</p>
+                    <div class="metric">40%</div>
+                    <div class="metric-label">Acceleration in Delivery Achieved</div>
+                </div>
+
+                <div class="offering-card">
+                    <h4>High Performance Engineering (HPSE)</h4>
+                    <p>Applying cross-domain practices (TOC, Lean, Statistical Modelling) for optimal systems performance.</p>
+                    <div class="metric">99.9%</div>
+                    <div class="metric-label">Uptime/Service Quality Focus</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <hr style="border-color: var(--color-secondary);">
+
+    <section id="contact">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p>Ready to accelerate your engineering transformation journey? Let's discuss how we can work together.</p>
+            <div class="contact-info">
+                <div class="info-block">
+                    <h4>Social Handle</h4>
+                    <p>@madhumadhanan</p>
+                    <p>Connect for insights and discussions.</p>
+                </div>
+                <div class="info-block">
+                    <h4>Strategic Inquiry</h4>
+                    <p>madhu@example.com (Placeholder)</p>
+                    <p>Response within 24 hours.</p>
+                </div>
+                <div class="info-block">
+                    <h4>Location</h4>
+                    <p>Available Globally (Remote)</p>
+                    <p>Based in Chennai, India (For reference)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://linkedin.com/in/madhumadhanan" target="_blank">LinkedIn</a> |
+                <a href="#" target="_blank">Medium</a> |
+                <a href="#" target="_blank">GitHub</a>
+            </div>
+            <p>&copy; 2025 Madhu Madhanan M. All rights reserved.</p>
+            <p style="color: var(--color-accent);">Created with AI in a Dark Mode Aesthetic.</p>
+        </div>
+    </footer>
+
 </body>
 </html>
