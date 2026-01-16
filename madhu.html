@@ -36,6 +36,7 @@
             z-index: 10;
             letter-spacing: 2px;
             animation: pulse 2s ease-in-out infinite;
+            pointer-events: none; /* Allows clicking through text if needed */
         }
 
         @keyframes pulse {
@@ -109,8 +110,8 @@
         }
 
         function createText() {
-            createTextGroup('MADHU', 2.5, true);
-            createTextGroup('MADHANAN', -2.5, false);
+            createTextGroup('MADHU', 2.0, true);
+            createTextGroup('MADHANAN', -2.0, false);
         }
 
         function createTextGroup(text, yPos, isFirst) {
@@ -123,7 +124,8 @@
             for (let i = 0; i < text.length; i++) {
                 const letter = text[i];
                 const letterGroup = createLetter(letter);
-                letterGroup.position.x = startX + i * letterSpacing;
+                // Center the letter horizontally within its spacing
+                letterGroup.position.x = startX + i * letterSpacing + (letterSpacing/2);
                 group.add(letterGroup);
             }
 
@@ -143,79 +145,41 @@
             
             const letterPaths = {
                 'M': () => {
-                    shape.moveTo(-0.4, 0);
-                    shape.lineTo(-0.4, 1);
-                    shape.lineTo(-0.25, 1);
-                    shape.lineTo(0, 0.5);
-                    shape.lineTo(0.25, 1);
-                    shape.lineTo(0.4, 1);
-                    shape.lineTo(0.4, 0);
-                    shape.lineTo(0.25, 0);
-                    shape.lineTo(0.25, 0.7);
-                    shape.lineTo(0.1, 0.4);
-                    shape.lineTo(-0.1, 0.4);
-                    shape.lineTo(-0.25, 0.7);
-                    shape.lineTo(-0.25, 0);
-                    shape.lineTo(-0.4, 0);
+                    shape.moveTo(-0.4, 0); shape.lineTo(-0.4, 1); shape.lineTo(-0.25, 1);
+                    shape.lineTo(0, 0.5); shape.lineTo(0.25, 1); shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0); shape.lineTo(0.25, 0); shape.lineTo(0.25, 0.7);
+                    shape.lineTo(0.1, 0.4); shape.lineTo(-0.1, 0.4); shape.lineTo(-0.25, 0.7);
+                    shape.lineTo(-0.25, 0); shape.lineTo(-0.4, 0);
                 },
                 'A': () => {
-                    shape.moveTo(0, 1);
-                    shape.lineTo(-0.4, 0);
-                    shape.lineTo(-0.2, 0);
-                    shape.lineTo(-0.15, 0.2);
-                    shape.lineTo(0.15, 0.2);
-                    shape.lineTo(0.2, 0);
-                    shape.lineTo(0.4, 0);
-                    shape.lineTo(0, 1);
+                    shape.moveTo(0, 1); shape.lineTo(-0.4, 0); shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.15, 0.2); shape.lineTo(0.15, 0.2); shape.lineTo(0.2, 0);
+                    shape.lineTo(0.4, 0); shape.lineTo(0, 1);
                 },
                 'D': () => {
-                    shape.moveTo(-0.3, 0);
-                    shape.lineTo(-0.3, 1);
-                    shape.lineTo(0, 1);
-                    shape.quadraticCurveTo(0.3, 1, 0.3, 0.5);
-                    shape.quadraticCurveTo(0.3, 0, 0, 0);
+                    shape.moveTo(-0.3, 0); shape.lineTo(-0.3, 1); shape.lineTo(0, 1);
+                    shape.quadraticCurveTo(0.3, 1, 0.3, 0.5); shape.quadraticCurveTo(0.3, 0, 0, 0);
                     shape.lineTo(-0.3, 0);
                 },
                 'H': () => {
-                    shape.moveTo(-0.4, 0);
-                    shape.lineTo(-0.4, 1);
-                    shape.lineTo(-0.2, 1);
-                    shape.lineTo(-0.2, 0.55);
-                    shape.lineTo(0.2, 0.55);
-                    shape.lineTo(0.2, 1);
-                    shape.lineTo(0.4, 1);
-                    shape.lineTo(0.4, 0);
-                    shape.lineTo(0.2, 0);
-                    shape.lineTo(0.2, 0.45);
-                    shape.lineTo(-0.2, 0.45);
-                    shape.lineTo(-0.2, 0);
+                    shape.moveTo(-0.4, 0); shape.lineTo(-0.4, 1); shape.lineTo(-0.2, 1);
+                    shape.lineTo(-0.2, 0.55); shape.lineTo(0.2, 0.55); shape.lineTo(0.2, 1);
+                    shape.lineTo(0.4, 1); shape.lineTo(0.4, 0); shape.lineTo(0.2, 0);
+                    shape.lineTo(0.2, 0.45); shape.lineTo(-0.2, 0.45); shape.lineTo(-0.2, 0);
                     shape.lineTo(-0.4, 0);
                 },
                 'U': () => {
-                    shape.moveTo(-0.4, 1);
-                    shape.lineTo(-0.4, 0.3);
-                    shape.quadraticCurveTo(-0.4, 0, 0, 0);
-                    shape.quadraticCurveTo(0.4, 0, 0.4, 0.3);
-                    shape.lineTo(0.4, 1);
-                    shape.lineTo(0.2, 1);
-                    shape.lineTo(0.2, 0.3);
-                    shape.quadraticCurveTo(0.2, 0.15, 0, 0.15);
-                    shape.quadraticCurveTo(-0.2, 0.15, -0.2, 0.3);
-                    shape.lineTo(-0.2, 1);
-                    shape.lineTo(-0.4, 1);
+                    shape.moveTo(-0.4, 1); shape.lineTo(-0.4, 0.3);
+                    shape.quadraticCurveTo(-0.4, 0, 0, 0); shape.quadraticCurveTo(0.4, 0, 0.4, 0.3);
+                    shape.lineTo(0.4, 1); shape.lineTo(0.2, 1); shape.lineTo(0.2, 0.3);
+                    shape.quadraticCurveTo(0.2, 0.15, 0, 0.15); shape.quadraticCurveTo(-0.2, 0.15, -0.2, 0.3);
+                    shape.lineTo(-0.2, 1); shape.lineTo(-0.4, 1);
                 },
                 'N': () => {
-                    shape.moveTo(-0.4, 0);
-                    shape.lineTo(-0.4, 1);
-                    shape.lineTo(-0.2, 1);
-                    shape.lineTo(0.2, 0.3);
-                    shape.lineTo(0.2, 1);
-                    shape.lineTo(0.4, 1);
-                    shape.lineTo(0.4, 0);
-                    shape.lineTo(0.2, 0);
-                    shape.lineTo(-0.2, 0.7);
-                    shape.lineTo(-0.2, 0);
-                    shape.lineTo(-0.4, 0);
+                    shape.moveTo(-0.4, 0); shape.lineTo(-0.4, 1); shape.lineTo(-0.2, 1);
+                    shape.lineTo(0.2, 0.3); shape.lineTo(0.2, 1); shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0); shape.lineTo(0.2, 0); shape.lineTo(-0.2, 0.7);
+                    shape.lineTo(-0.2, 0); shape.lineTo(-0.4, 0);
                 }
             };
 
@@ -232,6 +196,8 @@
             };
 
             const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            // Center geometry
+            geometry.center();
             
             const material = new THREE.MeshPhongMaterial({ 
                 color: 0x2c3e50,
@@ -270,9 +236,11 @@
             canvas.width = 256;
             canvas.height = 256;
             
-            ctx.fillStyle = '#f0f0f0';
-            ctx.fillRect(0, 0, 256, 256);
-            ctx.fillStyle = '#d0d0d0';
+            // 1. FIX: Clear rect instead of filling with grey to allow transparency
+            ctx.clearRect(0, 0, 256, 256);
+            
+            // 2. FIX: Use Black/Dark Grey text for contrast against white background
+            ctx.fillStyle = '#1a1a1a';
             ctx.font = 'bold 12px Courier New';
             
             const lines = asciiArt.split('\n');
@@ -285,7 +253,8 @@
             const material = new THREE.MeshBasicMaterial({ 
                 map: texture, 
                 transparent: true, 
-                opacity: 0.15
+                opacity: 0.2, // 3. FIX: Increased opacity slightly
+                side: THREE.DoubleSide
             });
             
             asciiMesh = new THREE.Mesh(geometry, material);
@@ -375,22 +344,36 @@
 
             const time = Date.now() * 0.001;
 
-            // Animate name text
+            // 4. FIX: Fluid Text Animation Logic
+            // We apply a sine wave to the Y position based on the index (i)
+            // This creates a "wave" traveling through the letters
+            
             if (textMesh1) {
-                textMesh1.rotation.y = Math.sin(time * 0.3) * 0.05;
-                textMesh1.position.y = 2.5 + Math.sin(time * 0.5) * 0.1;
+                // Main group float
+                textMesh1.position.y = 2.0 + Math.sin(time * 0.5) * 0.2;
+                textMesh1.rotation.y = Math.sin(time * 0.2) * 0.05;
+
                 textMesh1.children.forEach((letter, i) => {
-                    letter.rotation.y = Math.sin(time + i * 0.5) * 0.1;
-                    letter.position.z = Math.sin(time * 2 + i) * 0.05;
+                    // FLUID MOTION:
+                    // Vertical wave
+                    letter.position.y = Math.sin(time * 2 + i * 0.5) * 0.15;
+                    // Rotation wave
+                    letter.rotation.y = Math.sin(time * 1.5 + i * 0.3) * 0.15;
+                    // Slight forward/back tilt for organic feel
+                    letter.rotation.x = Math.cos(time * 1.2 + i * 0.2) * 0.1;
                 });
             }
 
             if (textMesh2) {
-                textMesh2.rotation.y = Math.sin(time * 0.3) * 0.05;
-                textMesh2.position.y = -2.5 + Math.sin(time * 0.5 + Math.PI) * 0.1;
+                // Main group float
+                textMesh2.position.y = -2.0 + Math.sin(time * 0.5 + 2) * 0.2;
+                textMesh2.rotation.y = Math.sin(time * 0.2) * 0.05;
+
                 textMesh2.children.forEach((letter, i) => {
-                    letter.rotation.y = Math.sin(time + i * 0.5 + Math.PI) * 0.1;
-                    letter.position.z = Math.sin(time * 2 + i + Math.PI) * 0.05;
+                    // FLUID MOTION (Offset phase for second word):
+                    letter.position.y = Math.sin(time * 2 + i * 0.5 + 2) * 0.15;
+                    letter.rotation.y = Math.sin(time * 1.5 + i * 0.3 + 1) * 0.15;
+                    letter.rotation.x = Math.cos(time * 1.2 + i * 0.2 + 1) * 0.1;
                 });
             }
 
@@ -398,6 +381,8 @@
             if (asciiMesh) {
                 asciiMesh.rotation.y = time * 0.1;
                 asciiMesh.rotation.x = Math.sin(time * 0.2) * 0.1;
+                // Add a subtle float to the watermark too
+                asciiMesh.position.y = Math.sin(time * 0.5) * 0.5;
             }
 
             // Animate particles
