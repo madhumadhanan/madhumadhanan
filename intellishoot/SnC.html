@@ -1,922 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>STABLE Coach – 10m Air Pistol S&C Planner</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#121b2f;
-      --muted:#94a3b8;
-      --text:#e5e7eb;
-      --line:#24314f;
-      --ok:#22c55e;
-      --warn:#f59e0b;
-      --bad:#ef4444;
-      --accent:#60a5fa;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      background: linear-gradient(180deg, #0b1220, #060a12);
-      color:var(--text);
-    }
-    header{
-      padding:24px 18px;
-      border-bottom:1px solid var(--line);
-      background: rgba(18,27,47,0.65);
-      backdrop-filter: blur(8px);
-      position: sticky; top:0; z-index:10;
-    }
-    header h1{margin:0; font-size:18px; letter-spacing:.3px}
-    header p{margin:6px 0 0; color:var(--muted); font-size:13px}
-    .wrap{max-width:1200px; margin:0 auto; padding:18px}
-    .grid{
-      display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
-    .card{
-      background: rgba(18,27,47,0.85);
-      border: 1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
-    }
-    .card h2{
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .row3{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:10px;
-    }
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select, textarea{
-      width:100%;
-      background:#0c1428;
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px 10px;
-      font-size:13px;
-      outline:none;
-    }
-    textarea{min-height:72px; resize:vertical}
-    .kpi{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:10px 10px;
-      border:1px solid var(--line);
-      background:#0c1428;
-      border-radius:12px;
-      margin-top:8px;
-      gap:10px;
-    }
-    .kpi .name{color:var(--muted); font-size:12px}
-    .kpi .val{font-weight:700; text-align:right}
-    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    button{
-      border:0;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:700;
-      font-size:13px;
-      cursor:pointer;
-    }
-    .primary{background:var(--accent); color:#081428}
-    .ghost{background:transparent; border:1px solid var(--line); color:var(--text)}
-    .danger{background:var(--bad); color:#200}
-    .note{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.4}
-    .sectionTitle{
-      display:flex; align-items:center; justify-content:space-between;
-      margin-bottom:6px;
-    }
-    .badge{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#0c1428;
-      color:var(--muted);
-    }
-    .table{
-      width:100%;
-      border-collapse:collapse;
-      overflow:hidden;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#0c1428;
-      margin-top:10px;
-    }
-    .table th, .table td{
-      padding:10px 10px;
-      border-bottom:1px solid var(--line);
-      font-size:12px;
-      vertical-align:top;
-    }
-    .table th{color:#cbd5e1; text-align:left; font-size:12px}
-    .table tr:last-child td{border-bottom:none}
-    .tag{font-weight:800}
-    .sev-ok{color:var(--ok)}
-    .sev-warn{color:var(--warn)}
-    .sev-bad{color:var(--bad)}
-    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:12px}
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media(max-width:980px){
-      .split{grid-template-columns:1fr}
-    }
-    .hr{height:1px; background:var(--line); margin:12px 0}
-    .small{font-size:11px;color:var(--muted)}
-    .successBox{
-      border:1px solid rgba(34,197,94,.35);
-      background: rgba(34,197,94,.08);
-      padding:10px;
-      border-radius:12px;
-      margin-top:10px;
-      font-size:12px;
-      color:#c7f9d4;
-    }
-    .warnBox{
-      border:1px solid rgba(245,158,11,.35);
-      background: rgba(245,158,11,.08);
-      padding:10px;
-      border-radius:12px;
-      margin-top:10px;
-      font-size:12px;
-      color:#ffe7bf;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madhu Madhanan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #ffffff;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            z-index: 10;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            #info {
+                font-size: 12px;
+                bottom: 20px;
+            }
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>STABLE Coach – Training Intervention Recommender (10m Air Pistol)</h1>
-    <p>Collect shooter variables → score STABLE domains → generate weekly microcycle + 4-week plan + monitoring KPIs.</p>
-  </div>
-</header>
-
-<div class="wrap">
-  <div class="grid">
-    <!-- LEFT: INPUTS -->
-    <div class="card" id="inputCard">
-      <div class="sectionTitle">
-        <h2>Shooter Profile</h2>
-        <span class="badge">Inputs</span>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Athlete Name</label>
-          <input id="name" placeholder="e.g., Elite Shooter A" />
-        </div>
-        <div>
-          <label>Handedness</label>
-          <select id="handed">
-            <option value="right">Right</option>
-            <option value="left">Left</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row3">
-        <div>
-          <label>Age</label>
-          <input id="age" type="number" min="10" max="80" value="24" />
-        </div>
-        <div>
-          <label>Gender</label>
-          <select id="gender">
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other / Prefer not say</option>
-          </select>
-        </div>
-        <div>
-          <label>Level</label>
-          <!-- FIXED: previously had 'aselect' typo -->
-          <select id="level">
-            <option value="elite">Elite / International</option>
-            <option value="national">National</option>
-            <option value="state">State</option>
-            <option value="club">Club / Developing</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row3">
-        <div>
-          <label>Years of Experience</label>
-          <input id="expYears" type="number" min="0" max="50" value="6" />
-        </div>
-        <div>
-          <label>Weekly Shooting Volume (sessions)</label>
-          <input id="shootSessions" type="number" min="0" max="14" value="6" />
-        </div>
-        <div>
-          <label>Competition Phase</label>
-          <select id="phase">
-            <option value="prep">Preparatory</option>
-            <option value="comp">Competition</option>
-            <option value="taper">Taper</option>
-            <option value="off">Off-season</option>
-          </select>
-        </div>
-      </div>
-
-      <label>Injury History (select up to 2)</label>
-      <div class="row">
-        <div>
-          <select id="inj1">
-            <option value="">—</option>
-            <option value="shoulder">Shoulder (rotator cuff/impingement)</option>
-            <option value="elbow">Elbow (lateral epicondylitis)</option>
-            <option value="wrist">Wrist/hand tendinopathy</option>
-            <option value="lumbar">Lower back pain</option>
-            <option value="neck">Neck/upper trap tension</option>
-          </select>
-        </div>
-        <div>
-          <select id="inj2">
-            <option value="">—</option>
-            <option value="shoulder">Shoulder (rotator cuff/impingement)</option>
-            <option value="elbow">Elbow (lateral epicondylitis)</option>
-            <option value="wrist">Wrist/hand tendinopathy</option>
-            <option value="lumbar">Lower back pain</option>
-            <option value="neck">Neck/upper trap tension</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="sectionTitle">
-        <h2>STABLE Scoring (0–5)</h2>
-        <span class="badge">Self/Coach rating</span>
-      </div>
-      <p class="small">0 = poor / limiting, 5 = excellent. Use recent training data and coach judgement.</p>
-
-      <label><span class="tag">S</span> Stability Profile (shoulder + scap + core endurance)</label>
-      <input id="S" type="number" min="0" max="5" value="3" />
-
-      <label><span class="tag">T</span> Technical Consistency (hold stability + trigger + fatigue errors)</label>
-      <input id="T" type="number" min="0" max="5" value="3" />
-
-      <label><span class="tag">A</span> Aerobic & Autonomic Control (HR/breathing stability + recovery)</label>
-      <input id="A" type="number" min="0" max="5" value="2" />
-
-      <label><span class="tag">B</span> Brain & Visual Load (focus duration + visual fatigue + stress)</label>
-      <input id="B" type="number" min="0" max="5" value="2" />
-
-      <label><span class="tag">L</span> Load Management (training balance + recovery + pain)</label>
-      <input id="L" type="number" min="0" max="5" value="3" />
-
-      <label><span class="tag">E</span> Experience Modifiers (training age + skill maturity)</label>
-      <input id="E" type="number" min="0" max="5" value="4" />
-
-      <div class="btns">
-        <button class="primary" id="gen" type="button">Generate Plan</button>
-        <button class="ghost" id="save" type="button">Save Profile</button>
-        <button class="ghost" id="load" type="button">Load Saved</button>
-        <button class="danger" id="reset" type="button">Reset</button>
-      </div>
-      <div class="note">
-        Tip: For elite shooters, keep S&C additive (stability/endurance), avoid excessive hypertrophy, and
-        protect technical quality (no heavy fatigue before key shooting sessions).
-      </div>
-    </div>
-
-    <!-- RIGHT: OUTPUTS -->
-    <div class="card" id="outputCard">
-      <div class="sectionTitle">
-        <h2>Recommendations</h2>
-        <span class="badge">Outputs</span>
-      </div>
-
-      <div class="split">
-        <div>
-          <div class="kpi">
-            <div class="name">Overall Risk / Priority Index</div>
-            <div class="val" id="riskIndex">—</div>
-          </div>
-          <div class="kpi">
-            <div class="name">Top Priority Domains</div>
-            <div class="val" id="topDomains">—</div>
-          </div>
-          <div class="kpi">
-            <div class="name">Recommended Weekly S&C Frequency</div>
-            <div class="val" id="scFreq">—</div>
-          </div>
-          <div class="kpi">
-            <div class="name">Recommended Aerobic Frequency</div>
-            <div class="val" id="aerFreq">—</div>
-          </div>
-          <div id="warnings"></div>
-        </div>
-
-        <div>
-          <div class="kpi">
-            <div class="name">Monitoring Focus (KPIs)</div>
-            <div class="val" id="kpiFocus">—</div>
-          </div>
-          <div class="kpi">
-            <div class="name">Re-test Interval</div>
-            <div class="val" id="retest">—</div>
-          </div>
-          <div class="kpi">
-            <div class="name">Plan Horizon</div>
-            <div class="val">4 weeks (microcycle ×4)</div>
-          </div>
-          <div class="successBox" id="coachNote" style="display:none"></div>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <div class="sectionTitle">
-        <h2>Weekly Microcycle (Suggested)</h2>
-        <span class="badge">Week 1 template</span>
-      </div>
-      <table class="table" id="weeklyTable"></table>
-
-      <div class="hr"></div>
-
-      <div class="sectionTitle">
-        <h2>4-Week Monthly Progression</h2>
-        <span class="badge">Progressive overload + taper logic</span>
-      </div>
-      <table class="table" id="monthlyTable"></table>
-
-      <div class="hr"></div>
-
-      <div class="sectionTitle">
-        <h2>Monitoring & Improvement Model</h2>
-        <span class="badge">What to measure and how</span>
-      </div>
-      <table class="table" id="monitorTable"></table>
-
-      <div class="btns">
-        <button class="ghost" id="downloadJson" type="button">Download Plan (JSON)</button>
-        <button class="ghost" id="downloadCsv" type="button">Download Tables (CSV)</button>
-      </div>
-
-      <p class="note">
-        This tool produces a *coach-assist* plan. Always adjust for pain, acute fatigue, travel, and match calendar.
-        If pain persists or worsens, reduce load and consult a qualified clinician.
-      </p>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Mobile-friendly error visibility (optional but helpful)
-  window.addEventListener("error", (e) => {
-    // Comment this out once stable
-    // alert("JS error: " + (e.message || "unknown"));
-    console.log("JS error:", e);
-  });
-
-  const $ = (id) => document.getElementById(id);
-
-  const DOMAIN_LABELS = {
-    S: "Stability",
-    T: "Technical",
-    A: "Aerobic/Autonomic",
-    B: "Brain/Visual",
-    L: "Load Mgmt",
-    E: "Experience"
-  };
-
-  const INJURY_MODS = {
-    shoulder: { S:+1, L:+1 },
-    elbow:    { S:+1, L:+1 },
-    wrist:    { S:+1, L:+1 },
-    lumbar:   { S:+1, L:+1 },
-    neck:     { B:+1, L:+1 }
-  };
-
-  const BLOCKS = {
-    shoulder_stability: {
-      title: "Shoulder Stability / Endurance",
-      dose: "3–4 sets × 30–45s holds (1–2 kg) + band rotator cuff 2–3×12–15",
-      notes: "Prioritise scapular control; stop if shoulder pain increases."
-    },
-    scapular_endurance: {
-      title: "Scapular Endurance",
-      dose: "Prone Y/T/W 2–3×10–12 + serratus wall slides 2–3×10",
-      notes: "Aim for quality; avoid shrugging."
-    },
-    core_anti_rotation: {
-      title: "Core Anti-rotation Endurance",
-      dose: "Pallof press 3×20–30s + side plank 3×20–40s",
-      notes: "Replicate shooting posture; maintain pelvic control."
-    },
-    forearm_grip: {
-      title: "Grip / Forearm Endurance (low force)",
-      dose: "Isometric grip holds 3×30–45s + wrist extensor endurance 2–3×12–15",
-      notes: "Avoid high-force max grip; keep tremor low."
-    },
-    aerobic_base: {
-      title: "Aerobic Base (HR stability + recovery)",
-      dose: "20–30 min @ 60–70% HRmax, 2–3×/week",
-      notes: "Keep conversational pace; avoid excessive fatigue."
-    },
-    breathing_autonomic: {
-      title: "Breathing & Autonomic Control",
-      dose: "5–8 min daily: box breathing or 4–6 breaths/min + pre-shot routine",
-      notes: "Use before training and during match simulations."
-    },
-    visual_hygiene: {
-      title: "Visual Fatigue Management",
-      dose: "Every 10–15 min: 20–30s visual break; blink control; distance gaze",
-      notes: "Track dry eye/headache; consider lighting and sight focus drills."
-    },
-    mental_focus_blocks: {
-      title: "Focus Endurance (cognitive load)",
-      dose: "2×/week: 10–15 min 'routine-only' drills + pressure simulation",
-      notes: "Score process KPIs: routine adherence, reset time."
-    },
-    load_rules: {
-      title: "Load Management Rules",
-      dose: "S&C not within 6–8h of key technical sessions; deload week as needed",
-      notes: "If pain >3/10 or fatigue high: reduce volume 20–40%."
-    }
-  };
-
-  const clamp = (x,min,max)=>Math.max(min,Math.min(max,x));
-
-  function readInputs(){
-    const inj = [ $("inj1").value, $("inj2").value ].filter(Boolean);
-    const stable = {
-      S: +$("S").value,
-      T: +$("T").value,
-      A: +$("A").value,
-      B: +$("B").value,
-      L: +$("L").value,
-      E: +$("E").value
-    };
-    Object.keys(stable).forEach(k => stable[k] = clamp(stable[k],0,5));
-
-    return {
-      name: $("name").value.trim() || "Shooter",
-      age: +$("age").value,
-      gender: $("gender").value,
-      level: $("level").value,
-      expYears: +$("expYears").value,
-      shootSessions: +$("shootSessions").value,
-      phase: $("phase").value,
-      handed: $("handed").value,
-      injuries: inj,
-      stable
-    };
-  }
-
-  function computePriorities(profile){
-    const base = {};
-    for(const k of Object.keys(profile.stable)){
-      base[k] = (5 - profile.stable[k]);
-    }
-
-    const mod = {S:0,T:0,A:0,B:0,L:0,E:0};
-    for(const inj of profile.injuries){
-      const m = INJURY_MODS[inj];
-      if(m) for(const k of Object.keys(m)) mod[k] += m[k];
-    }
-
-    if(profile.phase === "comp"){ mod.L += 1; mod.B += 0.5; }
-    if(profile.phase === "taper"){ mod.L += 1.5; mod.B += 0.5; }
-    if(profile.phase === "off"){ mod.S += 0.5; mod.A += 0.5; }
-
-    if(profile.age >= 40){ mod.L += 1; mod.S += 0.5; }
-    if(profile.age <= 18){ mod.S += 0.5; }
-    if(profile.expYears < 2){ mod.E += 1; mod.L += 0.5; }
-
-    const priority = {};
-    for(const k of Object.keys(base)){
-      priority[k] = base[k] + mod[k];
-    }
-    const idx = Object.values(priority).reduce((a,b)=>a+b,0) / 6;
-    return { priority, idx };
-  }
-
-  function selectInterventions(profile, priority){
-    const picks = [];
-    picks.push(BLOCKS.load_rules);
-
-    if(priority.S >= 3){
-      picks.push(BLOCKS.shoulder_stability, BLOCKS.scapular_endurance, BLOCKS.core_anti_rotation);
-    } else if(priority.S >= 1.5){
-      picks.push(BLOCKS.shoulder_stability, BLOCKS.core_anti_rotation);
-    }
-
-    if(priority.A >= 2){
-      picks.push(BLOCKS.aerobic_base, BLOCKS.breathing_autonomic);
-    } else if(priority.A >= 1){
-      picks.push(BLOCKS.breathing_autonomic);
-    }
-
-    if(priority.B >= 2){
-      picks.push(BLOCKS.visual_hygiene, BLOCKS.mental_focus_blocks);
-    } else if(priority.B >= 1){
-      picks.push(BLOCKS.visual_hygiene);
-    }
-
-    const forearmNeed = (priority.S + priority.T) / 2 + (profile.injuries.includes("elbow") || profile.injuries.includes("wrist") ? 1 : 0);
-    if(forearmNeed >= 3) picks.push(BLOCKS.forearm_grip);
-
-    const seen = new Set();
-    return picks.filter(b => (seen.has(b.title) ? false : (seen.add(b.title), true)));
-  }
-
-  function recommendFrequencies(profile, priority){
-    let sc = 2;
-    let aerobic = 2;
-
-    if(priority.S >= 3 || priority.L >= 3) sc = 3;
-    if(priority.A >= 3) aerobic = 3;
-
-    if(profile.phase === "comp"){ sc = Math.min(sc,2); aerobic = Math.min(aerobic,2); }
-    if(profile.phase === "taper"){ sc = 1; aerobic = 1; }
-
-    if(profile.shootSessions >= 9){
-      sc = Math.min(sc,2);
-      aerobic = Math.min(aerobic,2);
-    }
-    return { sc, aerobic };
-  }
-
-  function buildWeeklyPlan(profile, interventions, freq){
-    const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-    const plan = days.map(d => ({
-      day:d,
-      shooting: "Technical / planned",
-      sc: "—",
-      aerobic: "—",
-      notes: "—"
-    }));
-
-    const scDays = freq.sc === 1 ? ["Wed"] : (freq.sc === 2 ? ["Mon","Thu"] : ["Mon","Thu","Sat"]);
-    const aerDays = freq.aerobic === 1 ? ["Tue"] : (freq.aerobic === 2 ? ["Tue","Fri"] : ["Tue","Fri","Sun"]);
-
-    const scBlocks = interventions
-      .filter(x => ![
-        "Aerobic Base (HR stability + recovery)",
-        "Breathing & Autonomic Control",
-        "Visual Fatigue Management",
-        "Focus Endurance (cognitive load)",
-        "Load Management Rules"
-      ].includes(x.title));
-
-    function scSummary(){
-      const top = scBlocks.slice(0,3).map(b=>b.title.replace(" / Endurance","")).join("; ");
-      return top || "Stability maintenance";
-    }
-
-    scDays.forEach((d) => {
-      const row = plan.find(x=>x.day===d);
-      row.sc = scSummary();
-      row.notes = "Keep quality high; avoid heavy fatigue before key shooting.";
-      if(profile.injuries.length) row.notes += " Pain rule: stop if >3/10.";
-    });
-
-    aerDays.forEach(d=>{
-      const row = plan.find(x=>x.day===d);
-      row.aerobic = "20–30 min @ 60–70% HRmax";
-      if(row.notes === "—") row.notes = "Conversational pace; supports HR/breathing stability.";
-      else row.notes += " Add easy aerobic only.";
-    });
-
-    plan.forEach(r=>{
-      const add = [];
-      if(interventions.find(i=>i.title===BLOCKS.breathing_autonomic.title)) add.push("5–8 min breathing");
-      if(interventions.find(i=>i.title===BLOCKS.visual_hygiene.title)) add.push("visual breaks");
-      if(interventions.find(i=>i.title===BLOCKS.mental_focus_blocks.title)) add.push("routine-only focus block");
-      if(add.length){
-        r.notes = (r.notes==="—" ? "" : r.notes + " ") + `Daily: ${add.join(", ")}.`;
-      }
-    });
-
-    if(profile.phase !== "off"){
-      const sun = plan.find(x=>x.day==="Sun");
-      sun.shooting = "Optional light / recovery";
-      sun.sc = "—";
-      if(freq.aerobic < 3) sun.aerobic = "—";
-      sun.notes = "Prioritise recovery, mobility, sleep quality.";
-    }
-
-    return plan;
-  }
-
-  function buildMonthlyPlan(profile, freq){
-    const weeks = [1,2,3,4].map(w=>({
-      week:`Week ${w}`,
-      scSessions: freq.sc,
-      aerobicSessions: freq.aerobic,
-      focus: "",
-      progression: ""
-    }));
-
-    if(profile.phase === "comp"){
-      weeks[0].focus="Maintain; protect technical quality";
-      weeks[0].progression="Keep volume stable; intensity moderate";
-      weeks[1].focus="Maintain + micro-adjust";
-      weeks[1].progression="Reduce S&C volume 10–20% if fatigue accumulates";
-      weeks[2].focus="Match readiness";
-      weeks[2].progression="Prioritise recovery; short isometrics only";
-      weeks[3].focus="Deload / travel buffer";
-      weeks[3].progression="Reduce volume 30–40% (or taper into event)";
-    } else if(profile.phase === "taper"){
-      weeks.forEach((w, i)=>{
-        w.scSessions = Math.min(1, freq.sc);
-        w.aerobicSessions = Math.min(1, freq.aerobic);
-        w.focus = i===0 ? "Taper start" : (i===3 ? "Peak week" : "Maintain sharpness");
-        w.progression = "Short, low-fatigue sessions; keep routines stable";
-      });
-    } else {
-      weeks[0].focus="Base & technique-friendly strength";
-      weeks[0].progression="Learn movements; RPE 6–7; isometrics 30–40s";
-      weeks[1].focus="Build endurance capacity";
-      weeks[1].progression="Add +1 set or +5–10s per hold";
-      weeks[2].focus="Build + integrate with pressure drills";
-      weeks[2].progression="Maintain volume; add complexity (unilateral, anti-rotation)";
-      weeks[3].focus="Deload & consolidate";
-      weeks[3].progression="Reduce volume 25–35%; keep intensity moderate";
-    }
-
-    if(profile.injuries.length){
-      weeks[3].progression += " Injury: strict pain monitoring; consider physio review.";
-    }
-    return weeks;
-  }
-
-  function buildMonitoring(profile, priority){
-    const sorted = Object.entries(priority).sort((a,b)=>b[1]-a[1]);
-    const top = sorted.slice(0,2).map(x=>x[0]);
-
-    const kpis = [];
-    kpis.push({
-      metric:"10-shot series score variability (SD)",
-      method:"Track SD/variance across series in training + match simulations.",
-      target:"Reduce variability while maintaining mean score."
-    });
-    kpis.push({
-      metric:"Hold stability proxy (wobble area / trace length)",
-      method:"If SCATT/trace available: capture per session; else coach-rated stability 1–5.",
-      target:"Trend toward smaller wobble with stable routine time."
-    });
-
-    if(top.includes("S")){
-      kpis.push({
-        metric:"Isometric arm-hold endurance at shooting angle",
-        method:"Time to quality breakdown (stop when tremor/posture deviates).",
-        target:"+10–20% time in 4 weeks without pain."
-      });
-      kpis.push({
-        metric:"Scapular control quality",
-        method:"Coach checklist: no shrugging; stable scapula during holds (pass/fail).",
-        target:"≥90% clean reps."
-      });
-    }
-    if(top.includes("A")){
-      kpis.push({
-        metric:"HR stability during aiming",
-        method:"Wearable: HR before shot + HR recovery between series.",
-        target:"Lower peak HR; faster recovery across session."
-      });
-    }
-    if(top.includes("B")){
-      kpis.push({
-        metric:"Focus endurance (routine adherence)",
-        method:"% shots following full routine; record breaks in routine.",
-        target:"≥95% routine adherence in match simulations."
-      });
-      kpis.push({
-        metric:"Visual fatigue symptoms",
-        method:"0–10 rating after each session (dry eye, blur, headache).",
-        target:"Reduce symptom score over 4 weeks."
-      });
-    }
-    if(top.includes("L")){
-      kpis.push({
-        metric:"Pain + fatigue log",
-        method:"Daily: pain 0–10, sleep hrs, RPE, soreness.",
-        target:"Pain ≤3/10; stable sleep; reduce spikes."
-      });
-    }
-    if(top.includes("T")){
-      kpis.push({
-        metric:"Trigger quality errors",
-        method:"Count ‘snatch/pull’ events per 60 shots (coach or video).",
-        target:"Downtrend week to week."
-      });
-    }
-
-    const retest = (profile.phase === "comp" || profile.phase==="taper") ? "Every 2 weeks (light re-test)" : "Every 4 weeks";
-    return { kpis, retest };
-  }
-
-  function renderTable(el, headers, rows){
-    let html = "<thead><tr>" + headers.map(h=>`<th>${h}</th>`).join("") + "</tr></thead><tbody>";
-    html += rows.map(r=>{
-      return "<tr>" + r.map(c=>`<td>${c}</td>`).join("") + "</tr>";
-    }).join("");
-    html += "</tbody>";
-    el.innerHTML = html;
-  }
-
-  function computeSeverityText(idx){
-    if(idx >= 5.5) return {t:"High (intervention priority)", cls:"sev-bad"};
-    if(idx >= 3.0) return {t:"Moderate (targeted improvements)", cls:"sev-warn"};
-    return {t:"Low (maintenance focus)", cls:"sev-ok"};
-  }
-
-  function generate(){
-    const profile = readInputs();
-    const {priority, idx} = computePriorities(profile);
-    const sev = computeSeverityText(idx);
-
-    const top = Object.entries(priority)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,3)
-      .map(([k])=>`${k} (${DOMAIN_LABELS[k]})`)
-      .join(", ");
-
-    const interventions = selectInterventions(profile, priority);
-    const freq = recommendFrequencies(profile, priority);
-    const weekly = buildWeeklyPlan(profile, interventions, freq);
-    const monthly = buildMonthlyPlan(profile, freq);
-    const monitoring = buildMonitoring(profile, priority);
-
-    const kpiFocus = Object.entries(priority).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>DOMAIN_LABELS[k]).join(" + ");
-
-    $("riskIndex").innerHTML = `<span class="${sev.cls}">${sev.t}</span> <span class="mono">(${idx.toFixed(2)})</span>`;
-    $("topDomains").textContent = top || "—";
-    $("scFreq").textContent = `${freq.sc} session(s)/week`;
-    $("aerFreq").textContent = `${freq.aerobic} session(s)/week`;
-    $("kpiFocus").textContent = kpiFocus || "—";
-    $("retest").textContent = monitoring.retest;
-
-    const w = [];
-    if(profile.phase === "comp") w.push("Competition phase: keep S&C low-fatigue; avoid soreness before key sessions.");
-    if(profile.phase === "taper") w.push("Taper: minimal volume; maintain sharpness; prioritise sleep and routine stability.");
-    if(profile.shootSessions >= 9) w.push("High shooting volume: cap additional conditioning to avoid technical degradation.");
-    if(profile.injuries.length) w.push(`Injury history: ${profile.injuries.join(", ")} → apply strict pain rules and deload if needed.`);
-    $("warnings").innerHTML = w.length
-      ? `<div class="warnBox"><strong>Coach considerations:</strong><br>${w.map(x=>`• ${x}`).join("<br>")}</div>`
-      : "";
-
-    const coachNote = $("coachNote");
-    coachNote.style.display = "block";
-    coachNote.innerHTML = `<strong>Plan logic:</strong> Prioritise <em>${kpiFocus}</em>, schedule S&C away from key technical sessions, and re-test at <em>${monitoring.retest}</em>.`;
-
-    renderTable(
-      $("weeklyTable"),
-      ["Day","Shooting","S&C Focus","Aerobic","Notes"],
-      weekly.map(r=>[r.day,r.shooting,r.sc,r.aerobic,r.notes])
-    );
-
-    renderTable(
-      $("monthlyTable"),
-      ["Week","S&C Sessions","Aerobic Sessions","Primary Focus","Progression / Notes"],
-      monthly.map(r=>[r.week, String(r.scSessions), String(r.aerobicSessions), r.focus, r.progression])
-    );
-
-    renderTable(
-      $("monitorTable"),
-      ["Metric","How to Measure","Improvement Target"],
-      monitoring.kpis.map(k=>[k.metric, k.method, k.target])
-    );
-
-    window.__STABLE_LAST__ = { profile, priority, idx, interventions, freq, weekly, monthly, monitoring };
-  }
-
-  function saveProfile(){
-    const profile = readInputs();
-    localStorage.setItem("stable_profile_v1", JSON.stringify(profile));
-    alert("Saved to browser storage (stable_profile_v1).");
-  }
-
-  function loadProfile(){
-    const raw = localStorage.getItem("stable_profile_v1");
-    if(!raw) return alert("No saved profile found.");
-    const p = JSON.parse(raw);
-
-    $("name").value = p.name || "";
-    $("age").value = p.age ?? 24;
-    $("gender").value = p.gender || "female";
-    $("level").value = p.level || "elite";
-    $("expYears").value = p.expYears ?? 0;
-    $("shootSessions").value = p.shootSessions ?? 6;
-    $("phase").value = p.phase || "prep";
-    $("handed").value = p.handed || "right";
-
-    $("inj1").value = p.injuries?.[0] || "";
-    $("inj2").value = p.injuries?.[1] || "";
-
-    ["S","T","A","B","L","E"].forEach(k => $(k).value = p.stable?.[k] ?? 3);
-    alert("Loaded saved profile.");
-    generate();
-  }
-
-  function resetAll(){
-    $("name").value = "";
-    $("age").value = 24;
-    $("gender").value = "female";
-    $("level").value = "elite";
-    $("expYears").value = 6;
-    $("shootSessions").value = 6;
-    $("phase").value = "prep";
-    $("handed").value = "right";
-    $("inj1").value = "";
-    $("inj2").value = "";
-    ["S","T","A","B","L","E"].forEach(k => $(k).value = 3);
-
-    ["riskIndex","topDomains","scFreq","aerFreq","kpiFocus","retest"].forEach(id => $(id).textContent = "—");
-    $("weeklyTable").innerHTML = "";
-    $("monthlyTable").innerHTML = "";
-    $("monitorTable").innerHTML = "";
-    $("warnings").innerHTML = "";
-    $("coachNote").style.display = "none";
-    window.__STABLE_LAST__ = null;
-
-    generate();
-  }
-
-  function downloadJson(){
-    const data = window.__STABLE_LAST__;
-    if(!data) return alert("Generate a plan first.");
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "stable_plan.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function toCSVTable(headers, rows){
-    const esc = (v)=> `"${String(v).replaceAll('"','""')}"`;
-    const lines = [];
-    lines.push(headers.map(esc).join(","));
-    rows.forEach(r => lines.push(r.map(esc).join(",")));
-    return lines.join("\n");
-  }
-
-  function downloadCsv(){
-    const data = window.__STABLE_LAST__;
-    if(!data) return alert("Generate a plan first.");
-
-    const weeklyCsv = toCSVTable(
-      ["Day","Shooting","S&C Focus","Aerobic","Notes"],
-      data.weekly.map(r=>[r.day,r.shooting,r.sc,r.aerobic,r.notes])
-    );
-    const monthlyCsv = toCSVTable(
-      ["Week","S&C Sessions","Aerobic Sessions","Primary Focus","Progression / Notes"],
-      data.monthly.map(r=>[r.week,r.scSessions,r.aerobicSessions,r.focus,r.progression])
-    );
-    const monitorCsv = toCSVTable(
-      ["Metric","How to Measure","Improvement Target"],
-      data.monitoring.kpis.map(k=>[k.metric,k.method,k.target])
-    );
-
-    const combined = [
-      "WEEKLY MICRO-CYCLE", weeklyCsv,
-      "", "MONTHLY (4-WEEK) PLAN", monthlyCsv,
-      "", "MONITORING KPI PLAN", monitorCsv
-    ].join("\n\n");
-
-    const blob = new Blob([combined], {type:"text/csv;charset=utf-8"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "stable_plan_tables.csv";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  // Wire up
-  $("gen").addEventListener("click", generate);
-  $("save").addEventListener("click", saveProfile);
-  $("load").addEventListener("click", loadProfile);
-  $("reset").addEventListener("click", resetAll);
-  $("downloadJson").addEventListener("click", downloadJson);
-  $("downloadCsv").addEventListener("click", downloadCsv);
-
-  // Initial render
-  generate();
-</script>
+    <div id="container"></div>
+    <div id="info">AI • INNOVATION • FUTURE</div>
+    <div class="loading" id="loading">LOADING...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        let scene, camera, renderer, textMesh1, textMesh2, asciiMesh;
+        let particles = [];
+        let comets = [];
+        const container = document.getElementById('container');
+        
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffff);
+
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+            camera.position.z = window.innerWidth < 768 ? 18 : 12;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            const directionalLight2 = new THREE.DirectionalLight(0x4a90e2, 0.5);
+            directionalLight2.position.set(-5, -5, -5);
+            scene.add(directionalLight2);
+
+            createText();
+            createASCIIWatermark();
+            createParticles();
+            createComets();
+
+            document.getElementById('loading').style.display = 'none';
+
+            animate();
+        }
+
+        function createText() {
+            createTextGroup('MADHU', 2.5, true);
+            createTextGroup('MADHANAN', -2.5, false);
+        }
+
+        function createTextGroup(text, yPos, isFirst) {
+            const group = new THREE.Group();
+            const isMobile = window.innerWidth < 768;
+            const letterSpacing = isMobile ? 1.2 : 1.5;
+            const totalWidth = text.length * letterSpacing;
+            const startX = -totalWidth / 2;
+
+            for (let i = 0; i < text.length; i++) {
+                const letter = text[i];
+                const letterGroup = createLetter(letter);
+                letterGroup.position.x = startX + i * letterSpacing;
+                group.add(letterGroup);
+            }
+
+            group.position.y = yPos;
+            scene.add(group);
+
+            if (isFirst) {
+                textMesh1 = group;
+            } else {
+                textMesh2 = group;
+            }
+        }
+
+        function createLetter(char) {
+            const group = new THREE.Group();
+            const shape = new THREE.Shape();
+            
+            const letterPaths = {
+                'M': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.25, 1);
+                    shape.lineTo(0, 0.5);
+                    shape.lineTo(0.25, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.25, 0);
+                    shape.lineTo(0.25, 0.7);
+                    shape.lineTo(0.1, 0.4);
+                    shape.lineTo(-0.1, 0.4);
+                    shape.lineTo(-0.25, 0.7);
+                    shape.lineTo(-0.25, 0);
+                    shape.lineTo(-0.4, 0);
+                },
+                'A': () => {
+                    shape.moveTo(0, 1);
+                    shape.lineTo(-0.4, 0);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.15, 0.2);
+                    shape.lineTo(0.15, 0.2);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0, 1);
+                },
+                'D': () => {
+                    shape.moveTo(-0.3, 0);
+                    shape.lineTo(-0.3, 1);
+                    shape.lineTo(0, 1);
+                    shape.quadraticCurveTo(0.3, 1, 0.3, 0.5);
+                    shape.quadraticCurveTo(0.3, 0, 0, 0);
+                    shape.lineTo(-0.3, 0);
+                },
+                'H': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(-0.2, 0.55);
+                    shape.lineTo(0.2, 0.55);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(0.2, 0.45);
+                    shape.lineTo(-0.2, 0.45);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.4, 0);
+                },
+                'U': () => {
+                    shape.moveTo(-0.4, 1);
+                    shape.lineTo(-0.4, 0.3);
+                    shape.quadraticCurveTo(-0.4, 0, 0, 0);
+                    shape.quadraticCurveTo(0.4, 0, 0.4, 0.3);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.2, 0.3);
+                    shape.quadraticCurveTo(0.2, 0.15, 0, 0.15);
+                    shape.quadraticCurveTo(-0.2, 0.15, -0.2, 0.3);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(-0.4, 1);
+                },
+                'N': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(0.2, 0.3);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(-0.2, 0.7);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.4, 0);
+                }
+            };
+
+            if (letterPaths[char]) {
+                letterPaths[char]();
+            }
+
+            const extrudeSettings = {
+                depth: 0.15,
+                bevelEnabled: true,
+                bevelThickness: 0.02,
+                bevelSize: 0.02,
+                bevelSegments: 2
+            };
+
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x2c3e50,
+                shininess: 30
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+
+            const edges = new THREE.EdgesGeometry(geometry);
+            const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x4a90e2,
+                linewidth: 2
+            });
+            const wireframe = new THREE.LineSegments(edges, lineMaterial);
+            group.add(wireframe);
+
+            return group;
+        }
+
+        function createASCIIWatermark() {
+            const asciiArt = `
+    @@@@@@@@@@
+   @@@@@@@@@@@@
+  @@@@@@@@@@@@@@ 
+  @@@@@@@@@@@@@@
+  @@@@@@@@@@@@@@
+  @@@@@@@@@@@@@@
+   @@@@@@@@@@@@
+    @@@@@@@@@
+     @@@@@@@
+      @@@@@
+`;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 256;
+            
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, 256, 256);
+            ctx.fillStyle = '#d0d0d0';
+            ctx.font = 'bold 12px Courier New';
+            
+            const lines = asciiArt.split('\n');
+            lines.forEach((line, i) => {
+                ctx.fillText(line, 10, 20 + i * 14);
+            });
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const geometry = new THREE.PlaneGeometry(6, 6);
+            const material = new THREE.MeshBasicMaterial({ 
+                map: texture, 
+                transparent: true, 
+                opacity: 0.15
+            });
+            
+            asciiMesh = new THREE.Mesh(geometry, material);
+            asciiMesh.position.z = -5;
+            scene.add(asciiMesh);
+        }
+
+        function createParticles() {
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = window.innerWidth < 768 ? 400 : 600;
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+                
+                velocities.push({
+                    x: (Math.random() - 0.5) * 0.02,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.02
+                });
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x4a90e2,
+                size: 0.08,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            particleSystem.userData.velocities = velocities;
+            scene.add(particleSystem);
+            particles.push(particleSystem);
+        }
+
+        function createComets() {
+            for (let i = 0; i < 5; i++) {
+                createComet();
+            }
+        }
+
+        function createComet() {
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const trailLength = 20;
+            
+            for (let i = 0; i < trailLength; i++) {
+                positions.push(0, 0, 0);
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            
+            const material = new THREE.LineBasicMaterial({
+                color: 0x4a90e2,
+                transparent: true,
+                opacity: 0.6,
+                linewidth: 2
+            });
+            
+            const comet = new THREE.Line(geometry, material);
+            comet.userData = {
+                position: new THREE.Vector3(
+                    (Math.random() - 0.5) * 20,
+                    (Math.random() - 0.5) * 15,
+                    -5
+                ),
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.3,
+                    (Math.random() - 0.5) * 0.3,
+                    0.1
+                ),
+                trail: []
+            };
+            
+            scene.add(comet);
+            comets.push(comet);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            // Animate name text
+            if (textMesh1) {
+                textMesh1.rotation.y = Math.sin(time * 0.3) * 0.05;
+                textMesh1.position.y = 2.5 + Math.sin(time * 0.5) * 0.1;
+                textMesh1.children.forEach((letter, i) => {
+                    letter.rotation.y = Math.sin(time + i * 0.5) * 0.1;
+                    letter.position.z = Math.sin(time * 2 + i) * 0.05;
+                });
+            }
+
+            if (textMesh2) {
+                textMesh2.rotation.y = Math.sin(time * 0.3) * 0.05;
+                textMesh2.position.y = -2.5 + Math.sin(time * 0.5 + Math.PI) * 0.1;
+                textMesh2.children.forEach((letter, i) => {
+                    letter.rotation.y = Math.sin(time + i * 0.5 + Math.PI) * 0.1;
+                    letter.position.z = Math.sin(time * 2 + i + Math.PI) * 0.05;
+                });
+            }
+
+            // Animate ASCII watermark
+            if (asciiMesh) {
+                asciiMesh.rotation.y = time * 0.1;
+                asciiMesh.rotation.x = Math.sin(time * 0.2) * 0.1;
+            }
+
+            // Animate particles
+            particles.forEach(p => {
+                const positions = p.geometry.attributes.position.array;
+                const velocities = p.userData.velocities;
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += velocities[i / 3].x;
+                    positions[i + 1] += velocities[i / 3].y;
+                    positions[i + 2] += velocities[i / 3].z;
+                    
+                    if (Math.abs(positions[i]) > 15) velocities[i / 3].x *= -1;
+                    if (Math.abs(positions[i + 1]) > 10) velocities[i / 3].y *= -1;
+                    if (Math.abs(positions[i + 2]) > 5) velocities[i / 3].z *= -1;
+                }
+                
+                p.geometry.attributes.position.needsUpdate = true;
+                p.rotation.y += 0.001;
+            });
+
+            // Animate comets
+            comets.forEach(comet => {
+                comet.userData.position.add(comet.userData.velocity);
+                
+                if (comet.userData.position.x > 15 || comet.userData.position.x < -15 ||
+                    comet.userData.position.y > 10 || comet.userData.position.y < -10) {
+                    comet.userData.position.set(
+                        (Math.random() - 0.5) * 20,
+                        (Math.random() - 0.5) * 15,
+                        -5
+                    );
+                }
+                
+                comet.userData.trail.unshift(comet.userData.position.clone());
+                if (comet.userData.trail.length > 20) comet.userData.trail.pop();
+                
+                const positions = comet.geometry.attributes.position.array;
+                comet.userData.trail.forEach((pos, i) => {
+                    positions[i * 3] = pos.x;
+                    positions[i * 3 + 1] = pos.y;
+                    positions[i * 3 + 2] = pos.z;
+                });
+                comet.geometry.attributes.position.needsUpdate = true;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            camera.position.z = window.innerWidth < 768 ? 18 : 12;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+        window.addEventListener('load', init);
+    </script>
 </body>
 </html>
