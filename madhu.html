@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madhu Madhanan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #ffffff;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            z-index: 10;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            #info {
+                font-size: 12px;
+                bottom: 20px;
+            }
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <div id="info">AI • INNOVATION • FUTURE</div>
+    <div class="loading" id="loading">LOADING...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        let scene, camera, renderer, textMesh1, textMesh2, asciiMesh;
+        let particles = [];
+        let comets = [];
+        const container = document.getElementById('container');
+        
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffff);
+
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+            camera.position.z = window.innerWidth < 768 ? 18 : 12;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            const directionalLight2 = new THREE.DirectionalLight(0x4a90e2, 0.5);
+            directionalLight2.position.set(-5, -5, -5);
+            scene.add(directionalLight2);
+
+            createText();
+            createASCIIWatermark();
+            createParticles();
+            createComets();
+
+            document.getElementById('loading').style.display = 'none';
+
+            animate();
+        }
+
+        function createText() {
+            createTextGroup('MADHU', 2.5, true);
+            createTextGroup('MADHANAN', -2.5, false);
+        }
+
+        function createTextGroup(text, yPos, isFirst) {
+            const group = new THREE.Group();
+            const isMobile = window.innerWidth < 768;
+            const letterSpacing = isMobile ? 1.2 : 1.5;
+            const totalWidth = text.length * letterSpacing;
+            const startX = -totalWidth / 2;
+
+            for (let i = 0; i < text.length; i++) {
+                const letter = text[i];
+                const letterGroup = createLetter(letter);
+                letterGroup.position.x = startX + i * letterSpacing;
+                group.add(letterGroup);
+            }
+
+            group.position.y = yPos;
+            scene.add(group);
+
+            if (isFirst) {
+                textMesh1 = group;
+            } else {
+                textMesh2 = group;
+            }
+        }
+
+        function createLetter(char) {
+            const group = new THREE.Group();
+            const shape = new THREE.Shape();
+            
+            const letterPaths = {
+                'M': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.25, 1);
+                    shape.lineTo(0, 0.5);
+                    shape.lineTo(0.25, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.25, 0);
+                    shape.lineTo(0.25, 0.7);
+                    shape.lineTo(0.1, 0.4);
+                    shape.lineTo(-0.1, 0.4);
+                    shape.lineTo(-0.25, 0.7);
+                    shape.lineTo(-0.25, 0);
+                    shape.lineTo(-0.4, 0);
+                },
+                'A': () => {
+                    shape.moveTo(0, 1);
+                    shape.lineTo(-0.4, 0);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.15, 0.2);
+                    shape.lineTo(0.15, 0.2);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0, 1);
+                },
+                'D': () => {
+                    shape.moveTo(-0.3, 0);
+                    shape.lineTo(-0.3, 1);
+                    shape.lineTo(0, 1);
+                    shape.quadraticCurveTo(0.3, 1, 0.3, 0.5);
+                    shape.quadraticCurveTo(0.3, 0, 0, 0);
+                    shape.lineTo(-0.3, 0);
+                },
+                'H': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(-0.2, 0.55);
+                    shape.lineTo(0.2, 0.55);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(0.2, 0.45);
+                    shape.lineTo(-0.2, 0.45);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.4, 0);
+                },
+                'U': () => {
+                    shape.moveTo(-0.4, 1);
+                    shape.lineTo(-0.4, 0.3);
+                    shape.quadraticCurveTo(-0.4, 0, 0, 0);
+                    shape.quadraticCurveTo(0.4, 0, 0.4, 0.3);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.2, 0.3);
+                    shape.quadraticCurveTo(0.2, 0.15, 0, 0.15);
+                    shape.quadraticCurveTo(-0.2, 0.15, -0.2, 0.3);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(-0.4, 1);
+                },
+                'N': () => {
+                    shape.moveTo(-0.4, 0);
+                    shape.lineTo(-0.4, 1);
+                    shape.lineTo(-0.2, 1);
+                    shape.lineTo(0.2, 0.3);
+                    shape.lineTo(0.2, 1);
+                    shape.lineTo(0.4, 1);
+                    shape.lineTo(0.4, 0);
+                    shape.lineTo(0.2, 0);
+                    shape.lineTo(-0.2, 0.7);
+                    shape.lineTo(-0.2, 0);
+                    shape.lineTo(-0.4, 0);
+                }
+            };
+
+            if (letterPaths[char]) {
+                letterPaths[char]();
+            }
+
+            const extrudeSettings = {
+                depth: 0.15,
+                bevelEnabled: true,
+                bevelThickness: 0.02,
+                bevelSize: 0.02,
+                bevelSegments: 2
+            };
+
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x2c3e50,
+                shininess: 30
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            group.add(mesh);
+
+            const edges = new THREE.EdgesGeometry(geometry);
+            const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x4a90e2,
+                linewidth: 2
+            });
+            const wireframe = new THREE.LineSegments(edges, lineMaterial);
+            group.add(wireframe);
+
+            return group;
+        }
+
+        function createASCIIWatermark() {
+            const asciiArt = `
+    @@@@@@@@@@
+   @@@@@@@@@@@@
+  @@@@@@@@@@@@@@ 
+  @@@@@@@@@@@@@@
+  @@@@@@@@@@@@@@
+  @@@@@@@@@@@@@@
+   @@@@@@@@@@@@
+    @@@@@@@@@
+     @@@@@@@
+      @@@@@
+`;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 256;
+            
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, 256, 256);
+            ctx.fillStyle = '#d0d0d0';
+            ctx.font = 'bold 12px Courier New';
+            
+            const lines = asciiArt.split('\n');
+            lines.forEach((line, i) => {
+                ctx.fillText(line, 10, 20 + i * 14);
+            });
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const geometry = new THREE.PlaneGeometry(6, 6);
+            const material = new THREE.MeshBasicMaterial({ 
+                map: texture, 
+                transparent: true, 
+                opacity: 0.15
+            });
+            
+            asciiMesh = new THREE.Mesh(geometry, material);
+            asciiMesh.position.z = -5;
+            scene.add(asciiMesh);
+        }
+
+        function createParticles() {
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = window.innerWidth < 768 ? 400 : 600;
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 30;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+                
+                velocities.push({
+                    x: (Math.random() - 0.5) * 0.02,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.02
+                });
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x4a90e2,
+                size: 0.08,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            particleSystem.userData.velocities = velocities;
+            scene.add(particleSystem);
+            particles.push(particleSystem);
+        }
+
+        function createComets() {
+            for (let i = 0; i < 5; i++) {
+                createComet();
+            }
+        }
+
+        function createComet() {
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const trailLength = 20;
+            
+            for (let i = 0; i < trailLength; i++) {
+                positions.push(0, 0, 0);
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            
+            const material = new THREE.LineBasicMaterial({
+                color: 0x4a90e2,
+                transparent: true,
+                opacity: 0.6,
+                linewidth: 2
+            });
+            
+            const comet = new THREE.Line(geometry, material);
+            comet.userData = {
+                position: new THREE.Vector3(
+                    (Math.random() - 0.5) * 20,
+                    (Math.random() - 0.5) * 15,
+                    -5
+                ),
+                velocity: new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.3,
+                    (Math.random() - 0.5) * 0.3,
+                    0.1
+                ),
+                trail: []
+            };
+            
+            scene.add(comet);
+            comets.push(comet);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            // Animate name text
+            if (textMesh1) {
+                textMesh1.rotation.y = Math.sin(time * 0.3) * 0.05;
+                textMesh1.position.y = 2.5 + Math.sin(time * 0.5) * 0.1;
+                textMesh1.children.forEach((letter, i) => {
+                    letter.rotation.y = Math.sin(time + i * 0.5) * 0.1;
+                    letter.position.z = Math.sin(time * 2 + i) * 0.05;
+                });
+            }
+
+            if (textMesh2) {
+                textMesh2.rotation.y = Math.sin(time * 0.3) * 0.05;
+                textMesh2.position.y = -2.5 + Math.sin(time * 0.5 + Math.PI) * 0.1;
+                textMesh2.children.forEach((letter, i) => {
+                    letter.rotation.y = Math.sin(time + i * 0.5 + Math.PI) * 0.1;
+                    letter.position.z = Math.sin(time * 2 + i + Math.PI) * 0.05;
+                });
+            }
+
+            // Animate ASCII watermark
+            if (asciiMesh) {
+                asciiMesh.rotation.y = time * 0.1;
+                asciiMesh.rotation.x = Math.sin(time * 0.2) * 0.1;
+            }
+
+            // Animate particles
+            particles.forEach(p => {
+                const positions = p.geometry.attributes.position.array;
+                const velocities = p.userData.velocities;
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += velocities[i / 3].x;
+                    positions[i + 1] += velocities[i / 3].y;
+                    positions[i + 2] += velocities[i / 3].z;
+                    
+                    if (Math.abs(positions[i]) > 15) velocities[i / 3].x *= -1;
+                    if (Math.abs(positions[i + 1]) > 10) velocities[i / 3].y *= -1;
+                    if (Math.abs(positions[i + 2]) > 5) velocities[i / 3].z *= -1;
+                }
+                
+                p.geometry.attributes.position.needsUpdate = true;
+                p.rotation.y += 0.001;
+            });
+
+            // Animate comets
+            comets.forEach(comet => {
+                comet.userData.position.add(comet.userData.velocity);
+                
+                if (comet.userData.position.x > 15 || comet.userData.position.x < -15 ||
+                    comet.userData.position.y > 10 || comet.userData.position.y < -10) {
+                    comet.userData.position.set(
+                        (Math.random() - 0.5) * 20,
+                        (Math.random() - 0.5) * 15,
+                        -5
+                    );
+                }
+                
+                comet.userData.trail.unshift(comet.userData.position.clone());
+                if (comet.userData.trail.length > 20) comet.userData.trail.pop();
+                
+                const positions = comet.geometry.attributes.position.array;
+                comet.userData.trail.forEach((pos, i) => {
+                    positions[i * 3] = pos.x;
+                    positions[i * 3 + 1] = pos.y;
+                    positions[i * 3 + 2] = pos.z;
+                });
+                comet.geometry.attributes.position.needsUpdate = true;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            camera.position.z = window.innerWidth < 768 ? 18 : 12;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
