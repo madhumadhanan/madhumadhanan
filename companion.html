@@ -1,0 +1,452 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Companion Link — cloud bridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--void:#07090C;--panel:#10151B;--panel2:#161D25;--rule:#232C36;--ink:#D5DDE3;
+        --dim:#6F7F8C;--amber:#F0A93B;--teal:#45B8A8;--red:#E05A4F;--violet:#8A7DD6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--void);color:var(--ink);font-family:'IBM Plex Mono',monospace;
+       padding:26px 18px 60px;min-height:100vh;
+       background-image:radial-gradient(ellipse 800px 400px at 50% -8%,rgba(69,184,168,.07),transparent 70%)}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-family:Archivo,sans-serif;font-size:20px}
+  h1 span{color:var(--dim);font-weight:500}
+  .sub{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+  .card{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:16px;margin-top:16px}
+  .card h2{font-family:Archivo,sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--dim);margin-bottom:12px;
+           display:flex;justify-content:space-between;align-items:center}
+  button{font-family:inherit;font-size:12px;background:var(--panel2);color:var(--ink);
+         border:1px solid var(--rule);border-radius:2px;padding:9px 14px;cursor:pointer}
+  button:hover{border-color:var(--amber);color:var(--amber)}
+  button.primary{background:rgba(240,169,59,.12);border-color:var(--amber);color:var(--amber)}
+  button.tab{border-bottom:2px solid transparent;border-radius:2px 2px 0 0}
+  button.tab.on{border-color:var(--teal);color:var(--teal)}
+  button:disabled{opacity:.35;cursor:default}
+  input,select,textarea{font-family:inherit;font-size:12px;background:#0B1015;color:var(--ink);
+               border:1px solid var(--rule);border-radius:2px;padding:8px;width:100%}
+  input:focus,textarea:focus{outline:none;border-color:var(--teal)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  label{font-size:11px;color:var(--dim);display:flex;flex-direction:column;gap:5px}
+  .kv{color:var(--dim);font-size:12px} .kv b{color:var(--ink)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block;margin-right:6px}
+  .dot.on{background:var(--teal)}
+  #log,#plog{background:#080B0E;border:1px solid var(--rule);border-radius:2px;padding:10px;
+       font-size:11px;color:var(--dim);height:150px;overflow-y:auto;white-space:pre-wrap;margin-top:10px}
+  .ans{color:var(--teal)} .err{color:var(--red)} .warn{color:var(--amber)} .vio{color:var(--violet)}
+  .feed{margin-top:10px;font-size:12px;max-height:320px;overflow-y:auto}
+  .fe{padding:7px 9px;border-left:2px solid var(--rule);margin-bottom:6px;background:#0B1015}
+  .fe .t{font-size:10px;color:var(--dim)}
+  .fe.answer{border-color:var(--teal)} .fe.gesture{border-color:var(--violet)}
+  .fe.presence{border-color:var(--rule)}
+  details{margin-top:10px} summary{cursor:pointer;color:var(--dim);font-size:11px}
+  pre{background:#080B0E;border:1px solid var(--rule);padding:10px;font-size:10px;
+      overflow-x:auto;margin-top:8px;color:var(--dim)}
+  .hidden{display:none}
+</style>
+
+<div class="wrap">
+  <h1>Companion Link <span>/ cloud bridge · supabase</span></h1>
+  <div class="sub">device host runs where the unit is plugged in · partner console runs anywhere</div>
+
+  <!-- ============ pairing ============ -->
+  <div class="card">
+    <h2>Connection key <em style="color:var(--rule);font-style:normal">same key, entered on both ends</em></h2>
+    <div class="row">
+      <input id="ckey" placeholder="paste connection key — or fill the fields below and Generate"
+             style="flex:1;min-width:280px">
+      <button id="btnUseKey" class="primary">Use key</button>
+    </div>
+    <details>
+      <summary>first-time setup: create the backend + generate a key</summary>
+      <div class="grid" style="margin-top:10px">
+        <label>Supabase project URL <input id="sbUrl" placeholder="https://xxxx.supabase.co"></label>
+        <label>Anon (public) key <input id="sbAnon" placeholder="eyJhbGciOi..."></label>
+        <label>Pair code (any secret word) <input id="sbPair" placeholder="madhu-disc-7431"></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="btnGen">Generate connection key</button>
+        <span class="kv" id="genOut"></span>
+      </div>
+      <div class="kv" style="margin-top:10px">Run this once in the Supabase SQL editor:</div>
+      <pre>create table if not exists pair_messages (
+  id bigint generated always as identity primary key,
+  pair_key text not null,
+  direction text not null check (direction in ('to_device','from_device')),
+  kind text not null,
+  payload jsonb not null default '{}',
+  created_at timestamptz default now()
+);
+create index if not exists pm_idx on pair_messages (pair_key, id);
+alter table pair_messages enable row level security;
+create policy anon_rw on pair_messages for all using (true) with check (true);</pre>
+      <div class="kv warn" style="margin-top:6px">Note: the pair code is the only secret —
+        share the key privately. Per-pair auth policies come in a later milestone.</div>
+    </details>
+    <div class="row" style="margin-top:12px">
+      <span class="kv"><span class="dot" id="sbDot"></span>backend <b id="sbState">not connected</b></span>
+      <span class="kv">pair <b id="sbPairShow">—</b></span>
+    </div>
+  </div>
+
+  <!-- ============ role tabs ============ -->
+  <div class="row" style="margin-top:18px">
+    <button class="tab on" id="tabDev">Device host (unit plugged in here)</button>
+    <button class="tab" id="tabPar">Partner console (remote)</button>
+  </div>
+
+  <!-- ============ DEVICE HOST ============ -->
+  <div id="devPane">
+    <div class="card">
+      <h2>Unit</h2>
+      <div class="row">
+        <button id="btnUsb" class="primary"><span class="dot" id="usbDot"></span>Connect device</button>
+        <span class="kv">name <b id="dName">—</b></span>
+        <span class="kv">bridge <b id="brState">idle</b></span>
+        <span class="kv">last command <b id="brLast">—</b></span>
+      </div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <!-- ============ PARTNER CONSOLE ============ -->
+  <div id="parPane" class="hidden">
+    <div class="card">
+      <h2>Send to the unit</h2>
+      <div class="row">
+        <input id="pText" maxlength="52" placeholder="TYPE A MESSAGE — SHOWS ON THE DISC"
+               style="flex:1;min-width:220px;text-transform:uppercase">
+        <select id="pAnim" style="width:110px"></select>
+        <button id="pSendMsg" class="primary" disabled>Send message</button>
+        <button id="pSendQ" disabled>Send as question</button>
+      </div>
+      <div class="row" id="pEmotes" style="margin-top:10px"></div>
+      <div class="row" style="margin-top:12px">
+        <label style="flex:1;min-width:200px">Rename the unit
+          <input id="pName" maxlength="12" placeholder="Madhu"></label>
+        <button id="pSendName" disabled style="align-self:flex-end">Apply name</button>
+        <label style="min-width:180px">Send a photo (auto-converted)
+          <input type="file" id="pPhoto" accept="image/*"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Live from the unit <em style="color:var(--rule);font-style:normal" id="pPresence">presence: unknown</em></h2>
+      <div class="feed" id="feed"></div>
+      <div id="plog"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const EMOTES = ["heart","kiss","party","stars","hug","sun","moon"];
+const log  = (s,c) => { const d=$('log');  d.innerHTML += (c?`<span class="${c}">`:'')+s+(c?'</span>':'')+'\n'; d.scrollTop=d.scrollHeight; };
+const plog = (s,c) => { const d=$('plog'); d.innerHTML += (c?`<span class="${c}">`:'')+s+(c?'</span>':'')+'\n'; d.scrollTop=d.scrollHeight; };
+
+/* ============================ connection key ============================ */
+let SB = null;   // {url, anon, pair}
+
+function packKey(url, anon, pair) { return btoa(JSON.stringify([url, anon, pair])); }
+function unpackKey(k) {
+  const [url, anon, pair] = JSON.parse(atob(k.trim()));
+  if (!url || !anon || !pair) throw new Error('bad key');
+  return { url: url.replace(/\/$/, ''), anon, pair };
+}
+$('btnGen').onclick = () => {
+  const url = $('sbUrl').value.trim(), anon = $('sbAnon').value.trim(),
+        pair = $('sbPair').value.trim();
+  if (!url || !anon || !pair) { $('genOut').textContent = 'fill all three fields'; return; }
+  $('ckey').value = packKey(url, anon, pair);
+  $('genOut').textContent = 'key generated — copy it and send it to the other side';
+};
+$('btnUseKey').onclick = async () => {
+  try {
+    SB = unpackKey($('ckey').value);
+    const probe = await sbFetch(`pair_messages?pair_key=eq.${encodeURIComponent(SB.pair)}&select=id&limit=1`);
+    if (!probe.ok) throw new Error('backend refused: HTTP ' + probe.status +
+      (probe.status === 404 ? ' (table missing? run the SQL)' : ''));
+    $('sbDot').classList.add('on');
+    $('sbState').textContent = new URL(SB.url).host;
+    $('sbPairShow').textContent = SB.pair;
+    location.hash = encodeURIComponent($('ckey').value);   // bookmarkable, no storage APIs
+    for (const b of ['pSendMsg','pSendQ','pSendName']) $(b).disabled = false;
+    startPartnerPoll();
+    log('backend connected: ' + new URL(SB.url).host, 'ans');
+  } catch (e) { alert('Connection key problem: ' + e.message); }
+};
+if (location.hash.length > 5) {
+  $('ckey').value = decodeURIComponent(location.hash.slice(1));
+  setTimeout(() => $('btnUseKey').click(), 300);
+}
+
+function sbFetch(path, opts = {}) {
+  return fetch(`${SB.url}/rest/v1/${path}`, {
+    ...opts,
+    headers: { apikey: SB.anon, Authorization: 'Bearer ' + SB.anon,
+               'Content-Type': 'application/json', Prefer: 'return=minimal',
+               ...(opts.headers || {}) }
+  });
+}
+async function sbInsert(direction, kind, payload) {
+  const r = await sbFetch('pair_messages', {
+    method: 'POST',
+    body: JSON.stringify({ pair_key: SB.pair, direction, kind, payload })
+  });
+  if (!r.ok) throw new Error('insert failed: ' + r.status);
+}
+async function sbNew(direction, afterId) {
+  const q = `pair_messages?pair_key=eq.${encodeURIComponent(SB.pair)}` +
+            `&direction=eq.${direction}&id=gt.${afterId}&order=id.asc&limit=25` +
+            `&select=id,kind,payload,created_at`;
+  const r = await sbFetch(q, { headers: { Prefer: 'count=none' } });
+  if (!r.ok) throw new Error('poll failed: ' + r.status);
+  return r.json();
+}
+
+/* ================================ tabs ================================== */
+$('tabDev').onclick = () => { $('tabDev').classList.add('on'); $('tabPar').classList.remove('on');
+                              $('devPane').classList.remove('hidden'); $('parPane').classList.add('hidden'); };
+$('tabPar').onclick = () => { $('tabPar').classList.add('on'); $('tabDev').classList.remove('on');
+                              $('parPane').classList.remove('hidden'); $('devPane').classList.add('hidden'); };
+
+/* ========================= device host: USB side ======================== */
+let port = null, writer = null, lineResolvers = [], usbOk = false;
+
+async function usbConnect() {
+  if (!('serial' in navigator)) { log('WebSerial needs Chrome/Edge desktop', 'err'); return; }
+  port = await navigator.serial.requestPort();
+  await port.open({ baudRate: 115200 });
+  writer = port.writable.getWriter();
+  readLoop();
+  log('waking the unit…');
+  await writer.write(new TextEncoder().encode('\x04\r\n'));
+  await new Promise(r => setTimeout(r, 1800));
+  let hi = null;
+  for (let a = 1; a <= 3 && !hi; a++) {
+    try { hi = await request({ c: 'hi' }, 3000); }
+    catch { log(`no answer (try ${a}/3)…`, 'warn'); await new Promise(r => setTimeout(r, 1200)); }
+  }
+  if (!hi) { log('unit silent — unplug/replug (close Thonny first), then Connect', 'err'); return; }
+  usbOk = true;
+  $('usbDot').classList.add('on');
+  $('dName').textContent = hi.name || '?';
+  await request({ c: 'time', e: Math.floor(Date.now() / 1000) });
+  log('unit online, clock set — bridge armed', 'ans');
+  startBridge();
+}
+$('btnUsb').onclick = () => usbConnect().catch(e => log(String(e), 'err'));
+
+async function readLoop() {
+  const dec = new TextDecoder(); let buf = '';
+  const reader = port.readable.getReader();
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value);
+      let i;
+      while ((i = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+        if (!line.startsWith('{')) continue;
+        let o; try { o = JSON.parse(line); } catch { continue; }
+        const res = lineResolvers.shift();
+        if (res) res(o);
+      }
+    }
+  } catch (e) { log('usb lost: ' + e, 'err'); }
+  usbOk = false; $('usbDot').classList.remove('on');
+}
+function request(obj, timeoutMs = 8000) {
+  return new Promise(async (resolve, reject) => {
+    lineResolvers.push(resolve);
+    await writer.write(new TextEncoder().encode(JSON.stringify(obj) + '\n'));
+    setTimeout(() => {
+      const i = lineResolvers.indexOf(resolve);
+      if (i >= 0) { lineResolvers.splice(i, 1); reject(new Error('timeout')); }
+    }, timeoutMs);
+  });
+}
+async function putFile(name, bytes) {
+  let r = await request({ c: 'put', n: name });
+  if (r.r !== 'ok') throw new Error('put refused');
+  let sum = 0;
+  for (let o = 0; o < bytes.length; o += 384) {
+    const ch = bytes.slice(o, o + 384);
+    for (const b of ch) sum = (sum + b) >>> 0;
+    r = await request({ c: 'data', b: btoa(String.fromCharCode(...ch)) });
+    if (r.r !== 'ok') throw new Error('chunk failed');
+  }
+  r = await request({ c: 'end', sum });
+  if (r.r !== 'ok') throw new Error('checksum mismatch');
+}
+
+/* ==================== device host: the bridge loop ====================== */
+let bridgeTimer = null, lastCmdId = 0, bridgeBusy = false, presenceT = 0;
+
+function startBridge() {
+  if (bridgeTimer) clearInterval(bridgeTimer);
+  $('brState').textContent = 'polling every 4s';
+  bridgeTimer = setInterval(bridgeTick, 4000);
+  bridgeTick();
+}
+
+async function bridgeTick() {
+  if (!SB || !usbOk || bridgeBusy) return;
+  bridgeBusy = true;
+  try {
+    // DOWN: cloud -> device
+    const cmds = await sbNew('to_device', lastCmdId);
+    for (const c of cmds) {
+      lastCmdId = c.id;
+      $('brLast').textContent = c.kind + ' #' + c.id;
+      await execCommand(c.kind, c.payload || {});
+      log(`↓ ${c.kind} #${c.id}`, 'ans');
+    }
+    // UP: device -> cloud
+    const ev = await request({ c: 'poll' }, 4000);
+    for (const a of (ev.a || [])) await sbInsert('from_device', 'answer', a);
+    for (const g of (ev.g || [])) await sbInsert('from_device', 'gesture', g);
+    if ((ev.a || []).length || (ev.g || []).length)
+      log(`↑ ${(ev.a||[]).length} answers, ${(ev.g||[]).length} gestures`, 'vio');
+    // presence heartbeat every ~30s
+    if (Date.now() - presenceT > 30000) {
+      presenceT = Date.now();
+      await sbInsert('from_device', 'presence', { at: Math.floor(Date.now() / 1000) });
+    }
+  } catch (e) { log('bridge: ' + e.message, 'warn'); }
+  bridgeBusy = false;
+}
+
+async function execCommand(kind, p) {
+  if (kind === 'emote')      await request({ c: 'emote', name: p.name || 'heart' });
+  else if (kind === 'msg')   await request({ c: 'now', text: p.text || '', anim: p.anim || 'heart' });
+  else if (kind === 'question')
+    await request({ c: 'now', type: 'question', text: p.text || '', anim: p.anim || 'sun' });
+  else if (kind === 'config') await request({ c: 'cfg', k: p });
+  else if (kind === 'photo') {
+    const bytes = Uint8Array.from(atob(p.b64), ch => ch.charCodeAt(0));
+    await putFile(p.name || 'photo_90.pif', bytes);
+    await request({ c: 'bye' });                    // reload photo list
+  }
+}
+
+/* ===================== partner console: compose side ==================== */
+$('pAnim').innerHTML = EMOTES.map(e => `<option>${e}</option>`).join('');
+for (const e of EMOTES) {
+  const b = document.createElement('button');
+  b.textContent = e;
+  b.onclick = () => SB && sbInsert('to_device', 'emote', { name: e })
+      .then(() => plog('sent emote: ' + e, 'ans')).catch(er => plog(String(er), 'err'));
+  $('pEmotes').appendChild(b);
+}
+$('pSendMsg').onclick = () => {
+  const text = $('pText').value.trim().toUpperCase(); if (!text) return;
+  sbInsert('to_device', 'msg', { text, anim: $('pAnim').value })
+    .then(() => { plog('sent: ' + text, 'ans'); $('pText').value = ''; })
+    .catch(e => plog(String(e), 'err'));
+};
+$('pSendQ').onclick = () => {
+  const text = $('pText').value.trim().toUpperCase(); if (!text) return;
+  sbInsert('to_device', 'question', { text, anim: $('pAnim').value })
+    .then(() => { plog('question sent: ' + text, 'ans'); $('pText').value = ''; })
+    .catch(e => plog(String(e), 'err'));
+};
+$('pText').addEventListener('keydown', e => { if (e.key === 'Enter') $('pSendMsg').click(); });
+$('pSendName').onclick = () => {
+  const n = $('pName').value.trim(); if (!n) return;
+  sbInsert('to_device', 'config', { device_name: n })
+    .then(() => plog('rename sent: ' + n, 'ans')).catch(e => plog(String(e), 'err'));
+};
+
+/* photo -> PIF in the browser, then through the cloud */
+function swap565(r,g,b){const c=((r&0xF8)<<8)|((g&0xFC)<<3)|(b>>3);return((c&0xFF)<<8)|(c>>8);}
+function quantize(px,w,h){
+  const pts=[];
+  for(let i=0;i<w*h;i++){const a=px[i*4+3],r=px[i*4],g=px[i*4+1],b=px[i*4+2];
+    if(a>=40&&r+g+b>=24)pts.push([r,g,b,i]);}
+  let boxes=[pts];
+  while(boxes.length<255&&boxes.length){
+    boxes.sort((A,B)=>B.length-A.length);
+    const box=boxes.shift();
+    if(box.length<2){boxes.push(box);break;}
+    let best=0,range=-1;
+    for(let c=0;c<3;c++){let lo=255,hi=0;
+      for(const p of box){if(p[c]<lo)lo=p[c];if(p[c]>hi)hi=p[c];}
+      if(hi-lo>range){range=hi-lo;best=c;}}
+    box.sort((A,B)=>A[best]-B[best]);
+    const mid=box.length>>1;
+    boxes.push(box.slice(0,mid),box.slice(mid));}
+  const pal=[],idx=new Uint8Array(w*h);
+  boxes.forEach((box,bi)=>{let r=0,g=0,b=0;
+    for(const p of box){r+=p[0];g+=p[1];b+=p[2];}
+    const n=box.length||1;pal.push([r/n|0,g/n|0,b/n|0]);
+    for(const p of box)idx[p[3]]=bi+1;});
+  return{pal,idx};
+}
+function encodePIF(cv){
+  const w=cv.width,h=cv.height;
+  const px=cv.getContext('2d').getImageData(0,0,w,h).data;
+  const {pal,idx}=quantize(px,w,h);
+  const out=new Uint8Array(10+512+w*h);
+  out.set([80,73,70,49]);
+  out[4]=w&255;out[5]=w>>8;out[6]=h&255;out[7]=h>>8;out[8]=0;out[9]=1;
+  const dv=new DataView(out.buffer);
+  dv.setUint16(10,swap565(8,8,8),true);
+  for(let i=0;i<255;i++){const[r,g,b]=pal[i]||[0,0,0];
+    dv.setUint16(12+i*2,swap565(r,g,b),true);}
+  out.set(idx,522);
+  return out;
+}
+$('pPhoto').onchange = async e => {
+  const file = e.target.files[0]; if (!file || !SB) return;
+  const img = new Image(); img.src = URL.createObjectURL(file); await img.decode();
+  const cv = document.createElement('canvas');
+  const k = Math.min(150 / img.width, 190 / img.height);
+  cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+  cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+  const bytes = encodePIF(cv);
+  const name = 'photo_c' + (Date.now() % 100) + '.pif';
+  let b64 = ''; for (let i = 0; i < bytes.length; i += 8192)
+    b64 += String.fromCharCode(...bytes.slice(i, i + 8192));
+  await sbInsert('to_device', 'photo', { name, b64: btoa(b64) })
+    .then(() => plog(`photo queued (${(bytes.length/1024).toFixed(0)} KB) as ${name}`, 'ans'))
+    .catch(er => plog(String(er), 'err'));
+  e.target.value = '';
+};
+
+/* ================= partner console: response feed ======================= */
+let lastEvId = 0, parTimer = null;
+function startPartnerPoll() {
+  if (parTimer) clearInterval(parTimer);
+  parTimer = setInterval(partnerTick, 4000);
+  partnerTick();
+}
+async function partnerTick() {
+  if (!SB) return;
+  try {
+    const evs = await sbNew('from_device', lastEvId);
+    for (const e of evs) {
+      lastEvId = e.id;
+      const p = e.payload || {};
+      if (e.kind === 'presence') {
+        $('pPresence').textContent = 'presence: unit online · ' +
+          new Date(e.created_at).toLocaleTimeString();
+        continue;
+      }
+      const div = document.createElement('div');
+      div.className = 'fe ' + e.kind;
+      if (e.kind === 'answer')
+        div.innerHTML = `<b class="${p.answer === 'yes' ? 'ans' : 'warn'}">${p.answer}</b>
+          — “${p.text || p.id}” <div class="t">${new Date((p.at||0)*1000).toLocaleString()}</div>`;
+      else
+        div.innerHTML = `<span class="vio">${p.g || e.kind}</span>
+          <div class="t">${new Date((p.at||0)*1000).toLocaleString()}</div>`;
+      $('feed').prepend(div);
+    }
+  } catch (e) { plog('poll: ' + e.message, 'warn'); }
+}
+</script>
